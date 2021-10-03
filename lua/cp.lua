@@ -250,7 +250,7 @@ function remove()
     return
   end
   table.remove(P, N)
-  N = N - 1
+  tab(N - 1)
   tabline()
 end
 

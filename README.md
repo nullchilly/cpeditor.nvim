@@ -17,6 +17,7 @@ Note: To see all the available function use
 ```
 :Cp help()
 ```
+
 # Setup
 
 ```lua
