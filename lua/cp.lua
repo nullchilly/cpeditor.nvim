@@ -256,11 +256,13 @@ end
 
 function submit()
   local s = P[N]
---   os.system("echo [Submitting...] > .info")
-  vim.fn.jobstart(string.format("cf submit -f %s %s"), function()
+  vim.fn.jobstart({'bash', '-c', string.format("cf submit -f %s/$s %s", s.problemPath, s.lang[1], s.name)}, {
     on_stdout = function(_, data, _)
+    end,
+    on_exit = function(_, exitCode, _)
+      print("Fuck why doesn't it work")
     end
-  end)
+  })
 end
 
 function match(pattern, link)
