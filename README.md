@@ -12,7 +12,13 @@ neovim plugin for cp
 - Terminal intergration
 - GDB support
 
-# Config
+Note: To see all the available function use:
+
+```
+:Cp help()
+```
+
+# Setup
 
 ```lua
 require'cp'.setup {

@@ -250,6 +250,14 @@ function remove()
   tabline()
 end
 
+function submit()
+  vim.
+  os.system("echo [Submitting...] > .info")
+  vim.command("let i = winnr() | 2wincmd w | e .info | execute i . 'wincmd w'")
+  os.system(f"cf submit -f sol.cpp {cur} > .info")
+  vim.command("let i = winnr() | 2wincmd w | e | execute i . 'wincmd w'")
+end
+
 function match(pattern, link)
   local j = 0
   local group = {}
@@ -378,7 +386,15 @@ function setup(user_config)
   end
 end
 
-return {
+function help()
+  print("Usage:\n")
+  for k, v in pairs(M) do
+    print("Cp " .. k .. "({args})")
+  end
+end
+
+M = {
+  help = help,
   setup = setup,
   save = save,
   layout = layout,
@@ -387,6 +403,7 @@ return {
   run = run,
   tab = tab,
   add = add,
+  submit = submit,
   remove = remove,
   insert = insert,
   erase = erase,
@@ -398,3 +415,5 @@ return {
   run = run,
   test = test,
 }
+
+return M
