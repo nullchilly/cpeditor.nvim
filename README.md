@@ -37,8 +37,8 @@ require'cp'.setup {
   locals = {vim.loop.os_homedir() .. "/code/local", 1000},
   langs = {
     cpp = {"sol.cpp", "g++ -Wall -O2", "./a.out"},
-    python = {"sol.py", [[python -c "import py_compile; py_compile.compile('sol.py')"]], "python -u"},
-    pypy = {"sol.py", [[python -c "import py_compile; py_compile.compile('sol.py')"]], "pypy"},
+    python = {"sol.py", [[python -c "import py_compile; py_compile.compile('sol.py')"]], "python sol.py"},
+    pypy = {"sol.py", [[python -c "import py_compile; py_compile.compile('sol.py')"]], "pypy sol.py"},
   }, sol = "cpp", brute = "pypy", gen = "python",
   templates = vim.loop.os_homedir() .. "/code/templates/cp",
 }
