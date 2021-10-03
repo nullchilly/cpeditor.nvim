@@ -25,10 +25,10 @@ function layout(index, new)
   test(s.curTest)
 end
 
-function lang(L, new)
+function lang(L, first)
   local s = P[N]
   s.lang = C.langs[L]
-  if not new then main("e!" .. s.lang[1]) end
+  if not first then main("e!" .. s.lang[1]) end
 end
 
 function tabline()
@@ -251,11 +251,12 @@ function remove()
 end
 
 function submit()
-  vim.
-  os.system("echo [Submitting...] > .info")
-  vim.command("let i = winnr() | 2wincmd w | e .info | execute i . 'wincmd w'")
-  os.system(f"cf submit -f sol.cpp {cur} > .info")
-  vim.command("let i = winnr() | 2wincmd w | e | execute i . 'wincmd w'")
+  local s = P[N]
+--   os.system("echo [Submitting...] > .info")
+  vim.fn.jobstart(string.format("cf submit -f %s %s"), function()
+    on_stdout = function(_, data, _)
+    end
+  end)
 end
 
 function match(pattern, link)
@@ -349,12 +350,6 @@ function save()
 end
 
 function start()
-  local res = "autocmd ColorSCheme * "
-  for verdict, colors in pairs(C.colors) do
-    res = res .. "hi " .. verdict .. " guifg=" .. colors[1] .. " guibg=" .. colors[2] .. " | "
-    res = res .. "hi f" .. verdict .. " guifg=" .. colors[3] .. " guibg=" .. colors[4] .. " | "
-  end
-  vim.cmd(res)
   vim.o.hidden = true
   vim.o.termguicolors = true
 
@@ -396,6 +391,7 @@ end
 M = {
   help = help,
   setup = setup,
+  start = start,
   save = save,
   layout = layout,
   lang = lang,
