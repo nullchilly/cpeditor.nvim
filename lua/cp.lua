@@ -245,6 +245,10 @@ function add(name, timeout, problemPath, tests)
 end
 
 function remove()
+  if #P == 1 then
+    print("Won't remove the only problem")
+    return
+  end
   table.remove(P, N)
   N = N - 1
   tabline()
