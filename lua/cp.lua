@@ -170,7 +170,7 @@ function compile(all)
   local f = io.open(string.format("%s/.info", s.problemPath), "a")
   f:write("[Compiling...]\n")
   f:flush()
-  info("e! .info")
+  info("e .info")
   local job = vim.fn.jobstart(s.lang[2] .. " " .. s.lang[1], {
     on_stderr = function(_, data, _)
       for _, d in ipairs(data) do f:write(d .. '\n') end
