@@ -12,7 +12,7 @@ neovim plugin for cp
 - Terminal intergration
 - GDB support
 
-Note: To see all the available function use
+Note: To see all the available functions use
 
 ```
 :Cp help()

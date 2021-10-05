@@ -350,7 +350,7 @@ end
 
 function save()
   for name, s in pairs(P) do
-    local path = io.open(string.format("%s/%s.json", s.problemPath, name), "w")
+    local path = io.open(string.format("%s/%s.json", s.problemPath, s.name), "w")
     path:write(vim.fn.json_encode(s)) path.close()
   end
 end
