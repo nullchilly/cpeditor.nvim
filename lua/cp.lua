@@ -51,6 +51,7 @@ function tabline()
 end
 
 function test(t)
+  if not P[N].result[t] then return end
   info(string.format("e! tests/%d/%d.err", t, t))
   inp(string.format("e! tests/%d/%d.in", t, t))
   out(string.format("e! tests/%d/%d.out", t, t))
