@@ -133,7 +133,13 @@ function run(t)
   io.open(string.format("%s/tests/%d/%d.out", s.problemPath, t, t), "w"):close()
   local stdout = io.open(string.format("%s/tests/%d/%d.out", s.problemPath, t, t), "a")
   local stderr = io.open(string.format("%s/tests/%d/%d.err", s.problemPath, t, t), "a")
-  local timer = vim.fn.timer_start(s.timeout, function() s.result[t] = "TL" tabline() end)
+  local timer = vim.fn.timer_start(s.timeout, function()
+    s.result[t] = "TL"
+    stderr:close()
+    stdout:close()
+    tabline()
+    if t == s.curTest then info(string.format("e! tests/%d/%d.err", t, t)) out("e!") end
+  end)
   local job = vim.fn.jobstart(s.lang[3], {
     on_stderr = function(_, data, _)
       for _, d in ipairs(data) do stderr:write(d .. "\n") end
