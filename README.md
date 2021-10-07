@@ -4,13 +4,13 @@ neovim plugin for cp
 
 # Features
 
-- Problem parser
+- Problem parser (https://github.com/jmerle/competitive-companion)
 - Multiple problem
 - Extensive multitest
 - Hotkey submit
 - Stresstest
 - Terminal intergration
-- GDB support
+- GDB support (https://github.com/puremourning/vimspector)
 
 Note: To see all the available functions use
 
