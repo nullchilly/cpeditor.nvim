@@ -18,6 +18,12 @@ Note: To see all the available functions use
 :Cp help()
 ```
 
+# Install
+
+```lua
+  use 'tuwuna/cp.nvim'
+```
+
 # Setup
 
 ```lua
