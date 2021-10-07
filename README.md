@@ -21,7 +21,7 @@ Note: To see all the available functions use
 # Install
 
 ```lua
-  use 'tuwuna/cp.nvim'
+use 'tuwuna/cp.nvim'
 ```
 
 # Setup
