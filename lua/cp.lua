@@ -136,7 +136,16 @@ function run(t)
   local timer = vim.fn.timer_start(s.timeout, function()
     s.result[t] = "TL"
     tabline()
-    if t == s.curTest then info(string.format("e! tests/%d/%d.err", t, t)) out("e!") end
+    if t == s.curTest then
+      if stderr then
+        stderr:close()
+        info(string.format("e! tests/%d/%d.err", t, t))
+      end
+      if stdout then
+        stdout:close()
+        out("e");
+      end
+    end
   end)
   local job = vim.fn.jobstart(s.lang[3], {
     on_stderr = function(_, data, _)
@@ -146,11 +155,11 @@ function run(t)
       for _, d in ipairs(data) do stdout:write(d .. "\n") end
     end,
     on_exit = function(_, exitCode, _)
-      stderr:close()
-      stdout:close()
+      stderr:close() stderr = nil;
+      stdout:close() stdout = nil;
+      vim.fn.timer_stop(timer)
       if t == s.curTest then info(string.format("e! tests/%d/%d.err", t, t)) out("e!") end
       if exitCode == 0 then
-        vim.fn.timer_stop(timer)
         local comp = vim.fn.jobstart(string.format("diff -qbB tests/%d/%d.out tests/%d/%d.ans", t, t, t, t), {
           on_exit = function(_, e, _)
             if e == 0 then s.result[t] = "AC"
