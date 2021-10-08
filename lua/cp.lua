@@ -133,20 +133,8 @@ function run(t)
   io.open(string.format("%s/tests/%d/%d.out", s.problemPath, t, t), "w"):close()
   local stdout = io.open(string.format("%s/tests/%d/%d.out", s.problemPath, t, t), "a")
   local stderr = io.open(string.format("%s/tests/%d/%d.err", s.problemPath, t, t), "a")
-  local timer = vim.fn.timer_start(s.timeout, function()
-    s.result[t] = "TL"
-    tabline()
-    if t == s.curTest then
-      if stderr then
-        stderr:close()
-        info(string.format("e! tests/%d/%d.err", t, t))
-      end
-      if stdout then
-        stdout:close()
-        out("e");
-      end
-    end
-  end)
+  local timer = 0
+  local tle = nil
   local job = vim.fn.jobstart(s.lang[3], {
     on_stderr = function(_, data, _)
       for _, d in ipairs(data) do stderr:write(d .. "\n") end
@@ -155,8 +143,8 @@ function run(t)
       for _, d in ipairs(data) do stdout:write(d .. "\n") end
     end,
     on_exit = function(_, exitCode, _)
-      stderr:close() stderr = nil;
-      stdout:close() stdout = nil;
+      stderr:close() stderr = nil
+      stdout:close() stdout = nil
       vim.fn.timer_stop(timer)
       if t == s.curTest then info(string.format("e! tests/%d/%d.err", t, t)) out("e!") end
       if exitCode == 0 then
@@ -168,13 +156,22 @@ function run(t)
           end
         })
       else
-        s.result[t] = "RE"
+        if tle then s.result[t] = "TL"
+        else s.result[t] = "RE" end
         tabline()
+        if t == s.curTest then
+          info(string.format("e! tests/%d/%d.err", t, t))
+        end
+        out("e");
       end
     end
   })
   local input = io.open(string.format("%s/tests/%d/%d.in", s.problemPath, t, t), "r")
   vim.fn.chansend(job, input:read("*all")) input.close()
+  timer = vim.fn.timer_start(s.timeout, function()
+    vim.fn.jobstop(job)
+    tle = 1
+  end)
 end
 
 function compile(all)
