@@ -21,14 +21,62 @@ function layout(index, new)
   vim.cmd(C.layouts[index][1])
   s.layout = C.layouts[index][2]
   main("e!" .. s.lang[1])
-  info("e! .info | w | set ft=" .. C.sol)
+  info("e! .info | w | set ft=" .. s.sol)
   test(s.curTest)
 end
 
-function lang(L, first)
+function sol(L)
   local s = P[N]
-  s.lang = C.langs[L]
-  if not first then main("e!" .. s.lang[1]) end
+  if L then s.sol = L end
+  s.lang = C.langs[s.sol]
+  local f = io.open(string.format("%s/%s", s.problemPath, s.lang[1]))
+  if not f then os.execute(string.format("cp %s/%s %s/%s", C.templates, s.lang[1], s.problemPath, s.lang[1]))
+  else f:close() end
+  if s.layout then
+    main("w | e!" .. s.lang[1])
+    info("e! .info | w | set ft=" .. s.sol)
+  end
+end
+
+function brute(L)
+  local s = P[N]
+  if L then s.brute = L
+  elseif not s.brute then s.brute = C.brute end
+  s.lang = C.langs[s.brute]
+  local f = io.open(string.format("%s/%s", s.problemPath, s.lang[1]))
+  if not f then os.execute(string.format("cp %s/%s %s/%s", C.templates, s.lang[1], s.problemPath, s.lang[1]))
+  else f:close() end
+  if s.layout then
+    main("w | e!" .. s.lang[1])
+    info("e! .info | w | set ft=" .. s.brute)
+  end
+end
+
+function gen(L)
+  local s = P[N]
+  if L then s.gen = L
+  elseif not s.gen then s.gen = C.gen end
+  s.lang = C.langs[s.gen]
+  local f = io.open(string.format("%s/%s", s.problemPath, s.lang[1]))
+  if not f then os.execute(string.format("cp %s/%s %s/%s", C.templates, s.lang[1], s.problemPath, s.lang[1]))
+  else f:close() end
+  if s.layout then
+    main("w | e!" .. s.lang[1])
+    info("e! .info | w | set ft=" .. s.gen)
+  end
+end
+
+function stress()
+  local s = P[N]
+  if p.stress then
+    vim.fn.jobstop(p.stress)
+    p.stress = nil
+    return
+  end
+  p.stress = vim.fn.jobstart(cmd, {
+    on_stdout = function()
+    end
+  })
 end
 
 function tabline()
@@ -39,7 +87,7 @@ function tabline()
     res = res .. "%" .. i .. "@CpTab@ " .. v.name .. " "
   end
   res = res .. "%#FL#%T%="
-  s = P[N]
+  local s = P[N]
   for i, v in pairs(s.result) do
     res = res .. "%#"
     if i == s.curTest then res = res .. "f" end
@@ -126,25 +174,13 @@ function run(t)
       s.result[i] = "PD"
     end
   end
+  local s = P[N]
   s.result[t] = "PD"
   tabline()
-  local s = P[N]
-  io.open(string.format("%s/tests/%d/%d.err", s.problemPath, t, t), "w"):close()
-  io.open(string.format("%s/tests/%d/%d.out", s.problemPath, t, t), "w"):close()
-  local stdout = io.open(string.format("%s/tests/%d/%d.out", s.problemPath, t, t), "a")
-  local stderr = io.open(string.format("%s/tests/%d/%d.err", s.problemPath, t, t), "a")
   local timer = 0
   local tle = nil
-  local job = vim.fn.jobstart(s.lang[3], {
-    on_stderr = function(_, data, _)
-      for _, d in ipairs(data) do stderr:write(d .. "\n") end
-    end,
-    on_stdout = function(_, data, _)
-      for _, d in ipairs(data) do stdout:write(d .. "\n") end
-    end,
+  local job = vim.fn.jobstart(string.format("cd %s && %s < tests/%d/%d.in > tests/%d/%d.out 2> tests/%d/%d.err", s.problemPath, s.lang[3], t, t, t, t, t, t), {
     on_exit = function(_, exitCode, _)
-      stderr:close() stderr = nil
-      stdout:close() stdout = nil
       vim.fn.timer_stop(timer)
       if t == s.curTest then info(string.format("e! tests/%d/%d.err", t, t)) out("e!") end
       if exitCode == 0 then
@@ -166,8 +202,6 @@ function run(t)
       end
     end
   })
-  local input = io.open(string.format("%s/tests/%d/%d.in", s.problemPath, t, t), "r")
-  vim.fn.chansend(job, input:read("*all")) input.close()
   timer = vim.fn.timer_start(s.timeout, function()
     vim.fn.jobstop(job)
     tle = 1
@@ -201,9 +235,8 @@ end
 
 function build(tests)
   local s = P[N]
-  lang(C.sol, 0)
   os.execute(string.format("mkdir -p %s/tests", s.problemPath))
-  os.execute(string.format("cp %s/%s %s/%s", C.templates, s.lang[1], s.problemPath, s.lang[1]))
+  sol(C.sol)
   for t, data in pairs(tests) do
     s.result[t] = "NA"
     os.execute(string.format("mkdir -p %s/tests/%d", s.problemPath, t))
@@ -411,7 +444,10 @@ M = {
   start = start,
   save = save,
   layout = layout,
-  lang = lang,
+  sol = sol,
+  brute = brute,
+  gen = gen,
+  check = check,
   compile = compile,
   run = run,
   tab = tab,
