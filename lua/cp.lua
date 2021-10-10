@@ -58,8 +58,7 @@ function gen(L)
   elseif not s.gen then s.gen = C.gen end
   s.lang = C.langs[s.gen]
   local f = io.open(string.format("%s/%s", s.problemPath, s.lang[1]))
-  if not f then os.execute(string.format("cp %s/%s %s/%s", C.templates, s.lang[1], s.problemPath, s.lang[1]))
-  else f:close() end
+  if not f then os.execute(string.format("cp %s/%s %s/%s", C.templates, s.lang[1], s.problemPath, s.lang[1])) else f:close() end
   if s.layout then
     main("w | e!" .. s.lang[1])
     info("e! .info | w | set ft=" .. s.gen)
@@ -68,13 +67,30 @@ end
 
 function stress()
   local s = P[N]
-  if p.stress then
-    vim.fn.jobstop(p.stress)
-    p.stress = nil
+  if s.stress then
+    vim.fn.jobstop(s.stress)
+    s.stress = nil
+    s.stressStat = nil
+    tabline()
     return
   end
-  p.stress = vim.fn.jobstart(cmd, {
-    on_stdout = function()
+  local f = io.open(string.format("%s/stress.cpp", s.problemPath))
+  if not f then os.execute(string.format("cp %s/stress.cpp %s/stress.cpp", C.templates, s.problemPath)) else f:close() end
+  s.stressStat = "%#PD# Stressing "
+  tabline()
+  local test = 0
+  s.stress = vim.fn.jobstart(string.format("cd %s && g++ stress.cpp && ./a.out", s.problemPath), {
+    on_stderr = function(_, data, _)
+      s.stressStat = "%#RE# " .. data[1] .. " "
+      tabline()
+    end,
+    on_exit = function(_, exitCode, _)
+      if exitCode == 1 then
+        s.stressStat = "%#WA# Stressed "
+      else
+        s.stressStat = "%#AC# Stressed "
+      end
+      tabline()
     end
   })
 end
@@ -88,6 +104,7 @@ function tabline()
   end
   res = res .. "%#FL#%T%="
   local s = P[N]
+  if s.stressStat then res = res .. s.stressStat end
   for i, v in pairs(s.result) do
     res = res .. "%#"
     if i == s.curTest then res = res .. "f" end
@@ -166,6 +183,7 @@ function hide(stat)
 end
 
 function run(t)
+  local s = P[N]
   if t then
     inp("w")
   else
@@ -174,7 +192,6 @@ function run(t)
       s.result[i] = "PD"
     end
   end
-  local s = P[N]
   s.result[t] = "PD"
   tabline()
   local timer = 0
@@ -447,7 +464,7 @@ M = {
   sol = sol,
   brute = brute,
   gen = gen,
-  check = check,
+  stress = stress,
   compile = compile,
   run = run,
   tab = tab,
