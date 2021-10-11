@@ -375,7 +375,6 @@ function hightlight()
 end
 
 function process(data)
-  vim.cmd("lua require'cp'.hightlight()")
   json = vim.fn.json_decode(data)
   for _, tbl in ipairs(C.links) do
     local group = match(tbl[1], json.url)
@@ -432,6 +431,8 @@ function start()
 
 --// lua syntax soon //--
 vim.cmd[[
+autocmd ColorScheme * lua require'cp'.hightlight()
+execute "colorscheme " . g:colors_name
 function CpTab(num, clicks, button, flags)
   execute "lua require'cp'.tab(" . a:num . ")"
 endfunction
