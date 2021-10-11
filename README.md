@@ -60,7 +60,11 @@ require'cp'.setup {
     FL = {"#000000", "NONE", "#000000", "#000000"}
   }
 }
+```
 
+# Keybind
+
+```
 vim.api.nvim_set_keymap('n', '<F4>', ":lua require'cp'.remove()<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<F11>', ":lua require'cp'.compile()<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<F10>', ":lua require'cp'.run()<CR>", { noremap = true, silent = true })

@@ -16,6 +16,7 @@ function out(s) wincmd(P[N].layout[4], s) end
 function ans(s) wincmd(P[N].layout[5], s) end
 
 function layout(index, new)
+  if not index then index = C.layout end
   local s = P[N]
   if not new then vim.cmd("wa | only") end
   vim.cmd(C.layouts[index][1])
@@ -431,6 +432,7 @@ function start()
 
 --// lua syntax soon //--
 vim.cmd[[
+autocmd VimResized * lua require'cp'.layout()
 autocmd ColorScheme * lua require'cp'.hightlight()
 execute "colorscheme " . g:colors_name
 function CpTab(num, clicks, button, flags)
