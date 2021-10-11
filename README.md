@@ -49,25 +49,17 @@ require'cp'.setup {
     pypy = {"sol.py", [[python -c "import py_compile; py_compile.compile('sol.py')"]], "pypy sol.py"},
   }, sol = "cpp", brute = "bruteCpp", gen = "genCpp",
   templates = vim.loop.os_homedir() .. "/code/templates/cp",
+  colors = {
+    HD = {"#ffffff", "#000000", "#ffffff", "#000000"},
+    NA = {"#ffffff", "#ABB2BF", "#000000", "#ABB2BF"},
+    PD = {"#C678DD", "#ffffff", "#000000", "#ABB2BF"},
+    AC = {"#ffffff", "#98C379", "#000000", "#98C379"},
+    WA = {"#ffffff", "#E06C75", "#000000", "#E06C75"},
+    RE = {"#ffffff", "#61AFEF", "#000000", "#61AFEF"},
+    TL = {"#ffffff", "#E5C07B", "#000000", "#E5C07B"},
+    FL = {"#000000", "NONE", "#000000", "#000000"}
+  }
 }
-
-local colors = {
-  HD = {"#ffffff", "#000000", "#ffffff", "#000000"},
-  NA = {"#ffffff", "#ABB2BF", "#000000", "#ABB2BF"},
-  PD = {"#C678DD", "#ffffff", "#000000", "#ABB2BF"},
-  AC = {"#ffffff", "#98C379", "#000000", "#98C379"},
-  WA = {"#ffffff", "#E06C75", "#000000", "#E06C75"},
-  RE = {"#ffffff", "#61AFEF", "#000000", "#61AFEF"},
-  TL = {"#ffffff", "#E5C07B", "#000000", "#E5C07B"},
-  FL = {"#000000", "NONE", "#000000", "#000000"}
-}
-
-local res = "autocmd ColorSCheme * "
-for verdict, colors in pairs(colors) do
-  res = res .. "hi " .. verdict .. " guifg=" .. colors[1] .. " guibg=" .. colors[2] .. " | "
-  res = res .. "hi f" .. verdict .. " guifg=" .. colors[3] .. " guibg=" .. colors[4] .. " | "
-end
-vim.cmd(res)
 
 vim.api.nvim_set_keymap('n', '<A-D>', ":lua require'cp'.remove()<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<A-c>', ":lua require'cp'.compile()<CR>", { noremap = true, silent = true })

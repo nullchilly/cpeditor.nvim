@@ -365,7 +365,17 @@ function merge(group, path)
   return result
 end
 
+function hightlight()
+  for verdict, colors in pairs(C.colors) do
+    local res = ""
+    res = res .. "hi " .. verdict .. " guifg=" .. colors[1] .. " guibg=" .. colors[2] .. " | "
+    res = res .. "hi f" .. verdict .. " guifg=" .. colors[3] .. " guibg=" .. colors[4] .. " | "
+    vim.cmd(res)
+  end
+end
+
 function process(data)
+  vim.cmd("lua require'cp'.hightlight()")
   json = vim.fn.json_decode(data)
   for _, tbl in ipairs(C.links) do
     local group = match(tbl[1], json.url)
@@ -457,6 +467,7 @@ end
 
 M = {
   help = help,
+  hightlight = hightlight,
   setup = setup,
   start = start,
   save = save,
