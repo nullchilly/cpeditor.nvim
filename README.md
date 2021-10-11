@@ -32,11 +32,11 @@ require'cp'.setup {
   layouts = {
     {"", {0, 0, 0, 0, 0}},
     {"set nosplitright | vs | setl wfw | wincmd w | bel sp | vs | vs | 1wincmd w", {1, 2, 3, 4, 5}},
-    {"execute 'NvimTreeToggle' | set nosplitright | 2wincmd w | vs | setl wfw | wincmd w | bel sp | sp | sp | 2wincmd w", {2, 3, 4, 5, 6}},
+    {"execute 'NvimTreeToggle' | set nosplitright | 2wincmd w | vs | etl wfw | wincmd w | bel sp | sp | sp | 2wincmd w", {2, 3, 4, 5, 6}},
   }, layout = 2,
   links = {
     {"https://codeforces.com/contest/$/problem/$", vim.loop.os_homedir() .. "/code/contest/codeforces/$/$"},
-    {"https://codeforces.com/problemset/problem/$/$", vim.loop.os_homedir() .. "/code/contest/codeforces/$/$"},
+    {"https://codeforces.com/problemset/problem$/$", vim.loop.os_homedir() .. "/code/contest/codeforces/$/$"},
     {"https://atcoder.jp/contests/$/tasks/$", vim.loop.os_homedir() .. "/code/contest/atcoder/$/$"},
     {"https://www.codechef.com/problems/$", vim.loop.os_homedir() .. "/code/single/codechef/$"}
   },
@@ -61,17 +61,17 @@ require'cp'.setup {
   }
 }
 
-vim.api.nvim_set_keymap('n', '<A-D>', ":lua require'cp'.remove()<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<A-c>', ":lua require'cp'.compile()<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<A-r>', ":lua require'cp'.run()<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<A-a>', ":lua require'cp'.compile(0)<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<F4>', ":lua require'cp'.remove()<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<F11>', ":lua require'cp'.compile()<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<F10>', ":lua require'cp'.run()<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<F9>', ":lua require'cp'.compile(0)<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', 't', ":<C-u>call CpTest(v:count, 1, 'l', 0)<CR>", { noremap = true, silent = true })
 vim.cmd("function CpAdd(...)\nexecute 'Cp insert(' . v:count . ')'\nendfunction")
 vim.api.nvim_set_keymap('n', 'A', ':<C-u>call CpAdd()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<A-b>', ":lua require'cp'.erase()<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<A-d>', ":lua require'cp'.erase()<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<A-s>', ":lua require'cp'.hide_show()<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<A-m>', ":lua require'cp'.show_all()<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<A-o>', ":lua require'cp'.hide('AC')<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<A-a>', ":lua require'cp'.show_all()<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<A-c', ":lua require'cp'.hide('AC')<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<A-i>', ":lua require'cp'.invert()<CR>", { noremap = true, silent = true })
-for i = 1, 9 do vim.api.nvim_set_keymap('n', '<A-' .. i .. '>', ":lua require'cp'.tab(" .. i .. ")<CR>", { noremap = true, silent = true }) end
+for i = 1, 9 do vim.api.nvim_set_keymap('n', '<A-' .. i .. '>', ":lua require'cp'.tab(" .. i .. ")<CR>", { noremap = true, silent = true }) ends
 ```

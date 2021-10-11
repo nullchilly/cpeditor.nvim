@@ -306,7 +306,7 @@ function add(name, timeout, problemPath, tests)
 end
 
 function remove()
-  if #P == 1 then
+  if N == 1 then
     print("Won't remove the only problem")
     return
   end
