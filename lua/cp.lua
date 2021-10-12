@@ -429,7 +429,7 @@ end
 function start()
   vim.o.hidden = true
   vim.o.termguicolors = true
-  C:init()
+  C:keymaps()
 
 --// lua syntax soon //--
 vim.cmd[[
