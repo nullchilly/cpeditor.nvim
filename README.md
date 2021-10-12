@@ -79,3 +79,18 @@ vim.api.nvim_set_keymap('n', '<A-c', ":lua require'cp'.hide('AC')<CR>", { norema
 vim.api.nvim_set_keymap('n', '<A-i>', ":lua require'cp'.invert()<CR>", { noremap = true, silent = true })
 for i = 1, 9 do vim.api.nvim_set_keymap('n', '<A-' .. i .. '>', ":lua require'cp'.tab(" .. i .. ")<CR>", { noremap = true, silent = true }) ends
 ```
+
+# Layout
+
+```lua
+autoLayout = 2
+
+function layoutChange()
+  autoLayout = 3 - autoLayout
+  require'cp'.layout(autoLayout)
+end
+
+vim.cmd("autocmd VimResized * lua require'plugin.config.cp'.layoutChange()")
+
+return {layoutChange = layoutChange}
+```
