@@ -429,10 +429,14 @@ end
 function start()
   vim.o.hidden = true
   vim.o.termguicolors = true
+  C:init()
 
 --// lua syntax soon //--
 vim.cmd[[
+autocmd VimResized * lua require'cp'.layout()
+autocmd VimLeave * lua require'cp'.save()
 autocmd ColorScheme * lua require'cp'.hightlight()
+
 execute "colorscheme " . g:colors_name
 function CpTab(num, clicks, button, flags)
   execute "lua require'cp'.tab(" . a:num . ")"
@@ -444,16 +448,14 @@ function CpTest(num, clicks, button, flags)
   else
     execute "lua require'cp'.test(" . a:num . ")"
   endif
-endfunction
-
-command! -nargs=* Cp execute "lua require'cp'." . <f-args>
-autocmd VimLeave * lua require'cp'.save()]]
+endfunction]]
 --\\ lua syntax soon \\--
 
   receive()
 end
 
 function setup(user_config)
+  vim.cmd[[command! -nargs=* Cp execute "lua require'cp'." . <f-args>]]
   C = user_config
   if vim.fn.argv(0) == C.autostart_arg then
     start()
@@ -468,6 +470,7 @@ function help()
 end
 
 M = {
+  C = C,
   help = help,
   hightlight = hightlight,
   setup = setup,
