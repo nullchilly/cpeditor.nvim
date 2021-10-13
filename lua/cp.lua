@@ -457,9 +457,6 @@ end
 function setup(user_config)
   vim.cmd[[command! -nargs=* Cp execute "lua require'cp'." . <f-args>]]
   C = user_config
-  if vim.fn.argv(0) == C.autostart_arg then
-    start()
-  end
 end
 
 function help()

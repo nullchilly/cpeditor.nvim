@@ -36,7 +36,7 @@ require'cp'.setup {
   }, layout = 2,
   links = {
     {"https://codeforces.com/contest/$/problem/$", vim.loop.os_homedir() .. "/code/contest/codeforces/$/$"},
-    {"https://codeforces.com/problemset/problem/$", vim.loop.os_homedir() .. "/code/contest/codeforces/$/$"},
+    {"https://codeforces.com/problemset/problem$/$", vim.loop.os_homedir() .. "/code/contest/codeforces/$/$"},
     {"https://atcoder.jp/contests/$/tasks/$", vim.loop.os_homedir() .. "/code/contest/atcoder/$/$"},
     {"https://www.codechef.com/problems/$", vim.loop.os_homedir() .. "/code/single/codechef/$"}
   },
@@ -73,6 +73,9 @@ require'cp'.setup {
     vim.api.nvim_set_keymap('n', '<A-c', ":lua require'cp'.hide('AC')<CR>", { noremap = true, silent = true })
     vim.api.nvim_set_keymap('n', '<A-i>', ":lua require'cp'.invert()<CR>", { noremap = true, silent = true })
     for i = 1, 9 do vim.api.nvim_set_keymap('n', '<A-' .. i .. '>', ":lua require'cp'.tab(" .. i .. ")<CR>", { noremap = true, silent = true }) end
+    vim.cmd("autocmd VimResized * lua require'cp'.layout()")
   end
 }
+
+if vim.fn.argv(0) == 'cp' then vim.defer_fn(function() cp.start() end, 100) end
 ```
