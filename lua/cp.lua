@@ -242,7 +242,7 @@ function compile(all)
       if exitCode == 0 then
         f:write("[Compiled]")
         if all then
-          for i, _ in pairs(s.result) do run(i, 0) end
+          for i, _ in pairs(s.result) do if s.result[i] ~= "HD" then run(i, 0) end end
         end
       else f:write("[Compile Error]") end
       f:close()
