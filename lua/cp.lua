@@ -293,7 +293,7 @@ function add(name, timeout, problemPath, tests)
       return
     end
   end
-  if next(P) then vim.cmd("tabnew") end
+  if next(P) then vim.cmd("$tabnew") end
   N = #P + 1
   local f = io.open(string.format("%s/%s.json", problemPath, name))
   if f then
