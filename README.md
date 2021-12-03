@@ -10,7 +10,7 @@ neovim plugin for cp
 - Hotkey submit
 - Stresstest
 - Terminal intergration
-- GDB support (https://github.com/puremourning/vimspector)
+- GDB support (https://github.com/mfussenegger/nvim-dap)
 
 Note: To see all the available functions use
 
