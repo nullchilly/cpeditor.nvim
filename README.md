@@ -77,5 +77,5 @@ require'cp'.setup {
   end
 }
 
-if vim.fn.argv(0) == 'cp' then cp.start() end
+if vim.fn.argv(0) == 'cp' then require'cp'.start() end
 ```
