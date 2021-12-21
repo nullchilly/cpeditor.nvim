@@ -28,7 +28,6 @@ use 'tuwuna/cp.nvim'
 
 ```lua
 require'cp'.setup {
-  autostart_arg = 'cp',
   layouts = {
     {"", {0, 0, 0, 0, 0}},
     {"set nosplitright | vs | setl wfw | wincmd w | bel sp | vs | vs | 1wincmd w", {1, 2, 3, 4, 5}},
