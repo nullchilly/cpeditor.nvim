@@ -396,6 +396,7 @@ end
 
 function start()
   C:keymaps()
+  hightlight()
 
 --// lua syntax soon //--
 vim.cmd[[
@@ -403,7 +404,6 @@ autocmd VimResized * lua require'cp'.layout()
 autocmd VimLeave * lua require'cp'.save()
 autocmd ColorScheme * lua require'cp'.hightlight()
 
-execute "colorscheme " . g:colors_name
 function CpTab(num, clicks, button, flags)
   execute "lua require'cp'.tab(" . a:num . ")"
 endfunction
