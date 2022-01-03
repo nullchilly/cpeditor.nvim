@@ -1,6 +1,8 @@
+
+
 # cp.nvim
 
-neovim plugin for cp
+A plugin written in lua for Competitive Programming
 
 # Features
 
@@ -18,7 +20,7 @@ Note: To see all the available functions use
 :Cp help()
 ```
 
-# Install
+# Installation
 
 ```lua
 use 'tuwuna/cp.nvim'
@@ -35,7 +37,7 @@ require'cp'.setup {
   }, layout = 2,
   links = {
     {"https://codeforces.com/contest/$/problem/$", vim.loop.os_homedir() .. "/code/contest/codeforces/$/$"},
-    {"https://codeforces.com/problemset/problem$/$", vim.loop.os_homedir() .. "/code/contest/codeforces/$/$"},
+    {"https://codeforces.com/problemset/problem/$/$", vim.loop.os_homedir() .. "/code/contest/codeforces/$/$"},
     {"https://atcoder.jp/contests/$/tasks/$", vim.loop.os_homedir() .. "/code/contest/atcoder/$/$"},
     {"https://www.codechef.com/problems/$", vim.loop.os_homedir() .. "/code/single/codechef/$"}
   },
