@@ -4,14 +4,19 @@
 
 A plugin written in lua for Competitive Programming
 
+# Preview
+
+https://user-images.githubusercontent.com/56817415/150634437-58b4ed29-ef33-4c30-977b-648d0cff2db7.mp4
+
 # Features
 
 - Problem parser (https://github.com/jmerle/competitive-companion)
 - Multiple problem
 - Extensive multitest
-- Hotkey submit
+- Hotkey submit (https://github.com/xalanq/cf-tool)
 - Stresstest
 - Terminal intergration
+
 - GDB support (https://github.com/mfussenegger/nvim-dap)
 
 Note: To see all the available functions use
