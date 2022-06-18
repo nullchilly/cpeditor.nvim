@@ -85,6 +85,7 @@ function M:test(t)
 	self.curTest = t
 end
 
+-- TODO: refactor old codes below
 function M:insert(t)
 	local s = P[N]
 	s.result[t] = "NA"
