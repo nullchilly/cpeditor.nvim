@@ -6,8 +6,6 @@ A plugin written in lua for Competitive Programming
 
 # Preview
 
-https://user-images.githubusercontent.com/56817415/150634437-58b4ed29-ef33-4c30-977b-648d0cff2db7.mp4
-
 # Features
 
 - Problem parser (https://github.com/jmerle/competitive-companion)
@@ -21,67 +19,81 @@ https://user-images.githubusercontent.com/56817415/150634437-58b4ed29-ef33-4c30-
 
 Note: To see all the available functions use
 
-```
-:Cp help()
-```
-
 # Installation
 
 ```lua
-use 'tuwuna/cp.nvim'
+use 'nullchilly/cp.nvim'
 ```
 
 # Setup
 
 ```lua
-require'cp'.setup {
-  layouts = {
-    {"", {0, 0, 0, 0, 0}},
-    {"set nosplitright | vs | setl wfw | wincmd w | bel sp | vs | vs | 1wincmd w", {1, 2, 3, 4, 5}},
-    {"execute 'NvimTreeToggle' | set nosplitright | 2wincmd w | vs | setl wfw | wincmd w | bel sp | sp | sp | 2wincmd w", {2, 3, 4, 5, 6}},
-  }, layout = 2,
-  links = {
-    {"https://codeforces.com/contest/$/problem/$", vim.loop.os_homedir() .. "/code/contest/codeforces/$/$"},
-    {"https://codeforces.com/problemset/problem/$/$", vim.loop.os_homedir() .. "/code/contest/codeforces/$/$"},
-    {"https://atcoder.jp/contests/$/tasks/$", vim.loop.os_homedir() .. "/code/contest/atcoder/$/$"},
-    {"https://www.codechef.com/problems/$", vim.loop.os_homedir() .. "/code/single/codechef/$"}
+require("cp").setup {
+	bufferline_integration = false,
+	links = {
+		["local"] = "~/code/local",
+		["https://codeforces.com/contest/(%d+)/problem/(%w+)"] = "~/code/contest/codeforces",
+		["https://codeforces.com/problemset/problem/(%d+)/(%w+)"] = "~/code/contest/codeforces",
+	},
+	layouts = {
+		floating = {},
+		default = {
+			cmd = "set nosplitright | vs | setl wfw | wincmd w | bel sp | vs | vs | 1wincmd w",
+			order = {1, 2, 3, 4, 5}, -- main, errors, input, output, expected output
+		},
+	},
+	default_layout = "default",
+	langs = {
+    cpp = {
+			main = {"sol.cpp", "g++ -Wall -O2 -o sol", "./sol"},
+			brute = {"brute.cpp", "g++ -Wall -O2 -o brute", "./brute"},
+			gen = {"gen.cpp", "g++ -Wall -O2 -o gen", "./gen"},
+		}
   },
-  locals = {vim.loop.os_homedir() .. "/code/local", 1000},
-  langs = {
-    cpp = {"sol.cpp", "g++ -Wall -O2 -o sol", "./sol"},
-    bruteCpp = {"brute.cpp", "g++ -Wall -O2 -o brute", "./brute"},
-    genCpp = {"gen.cpp", "g++ -Wall -O2 -o gen", "./gen"},
-    python = {"sol.py", [[python -c "import py_compile; py_compile.compile('sol.py')"]], "python sol.py"},
-    pypy = {"sol.py", [[python -c "import py_compile; py_compile.compile('sol.py')"]], "pypy sol.py"},
-  }, sol = "cpp", brute = "bruteCpp", gen = "genCpp",
-  templates = vim.loop.os_homedir() .. "/code/templates/cp",
-  colors = {
-    HD = {"#ffffff", "#000000", "#ffffff", "#000000"},
-    NA = {"#ffffff", "#ABB2BF", "#000000", "#ABB2BF"},
-    PD = {"#C678DD", "#ffffff", "#000000", "#ABB2BF"},
-    AC = {"#ffffff", "#98C379", "#000000", "#98C379"},
-    WA = {"#ffffff", "#E06C75", "#000000", "#E06C75"},
-    RE = {"#ffffff", "#61AFEF", "#000000", "#61AFEF"},
-    TL = {"#ffffff", "#E5C07B", "#000000", "#E5C07B"},
-    FL = {"#000000", "NONE", "#000000", "#000000"}
-  },
-  keymaps = function()
-    vim.api.nvim_set_keymap('n', '<F4>', ":lua require'cp'.remove()<CR>", { noremap = true, silent = true })
-    vim.api.nvim_set_keymap('n', '<F11>', ":lua require'cp'.compile()<CR>", { noremap = true, silent = true })
-    vim.api.nvim_set_keymap('n', '<F10>', ":lua require'cp'.run()<CR>", { noremap = true, silent = true })
-    vim.api.nvim_set_keymap('n', '<F9>', ":lua require'cp'.compile(0)<CR>", { noremap = true, silent = true })
-    vim.api.nvim_set_keymap('n', 't', ":<C-u>call CpTest(v:count, 1, 'l', 0)<CR>", { noremap = true, silent = true })
-    vim.cmd("function CpAdd(...)\nexecute 'Cp insert(' . v:count . ')'\nendfunction")
-    vim.api.nvim_set_keymap('n', 'A', ':<C-u>call CpAdd()<CR>', { noremap = true, silent = true })
-    vim.api.nvim_set_keymap('n', '<A-d>', ":lua require'cp'.erase()<CR>", { noremap = true, silent = true })
-    vim.api.nvim_set_keymap('n', '<A-s>', ":lua require'cp'.hide_show()<CR>", { noremap = true, silent = true })
-    vim.api.nvim_set_keymap('n', '<A-a>', ":lua require'cp'.show_all()<CR>", { noremap = true, silent = true })
-    vim.api.nvim_set_keymap('n', '<A-c', ":lua require'cp'.hide('AC')<CR>", { noremap = true, silent = true })
-    vim.api.nvim_set_keymap('n', '<A-i>', ":lua require'cp'.invert()<CR>", { noremap = true, silent = true })
-    for i = 1, 9 do vim.api.nvim_set_keymap('n', '<A-' .. i .. '>', ":lua require'cp'.tab(" .. i .. ")<CR>", { noremap = true, silent = true }) end
-    vim.cmd("autocmd VimResized * lua require'cp'.layout()")
-  end
+	default_lang = "cpp"
 }
+```
 
-if vim.fn.argv(0) == 'cp' then require'cp'.start() end
+# Integrations
+
+- Bufferline
+set `bufferline_integration = true`, example config:
+```lua
+require("bufferline").setup {
+	options = {
+		mode = "tabs",
+		close_command = "tabclose",
+		right_mouse_command = "tabclose",
+		left_mouse_command = "tabnew %d",
+		offsets = {
+			{
+				filetype = "NvimTree",
+				text = "",
+				padding = 1,
+			},
+		},
+		name_formatter = function(tab)  -- tab contains a "name", "path" and "tabnr"
+			local error, problem_name = pcall(function() return vim.api.nvim_tabpage_get_var(tab.tabnr, "cp_problem_name") end)
+			if error == false then
+				return tab.name
+			end
+			return problem_name
+		end,
+		custom_areas = {
+			right = function()
+				local result = {}
+				table.insert(result, {text = _G.cp_problem:tabline()})
+				return result
+			end
+		},
+	},
+}
+```
+
+# Keymaps
+```lua
+vim.keymap.set("n", "<leader>x", "<cmd> tabclose <CR>") --"	close buffer"
+vim.keymap.set('n', 't', function()
+	vim.cmd("Cp test " .. vim.v.count)
+end)
 ```

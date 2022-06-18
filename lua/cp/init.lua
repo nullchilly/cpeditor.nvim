@@ -1,19 +1,28 @@
 local M = {}
 
 local default_config = {
+	bufferline_integration = true,
 	links = {
-		["https://codeforces.com/contest/(%d+)/problem/(%w+)"] = "/home/nullchilly/code/contest/codeforces",
+		["local"] = "~/code/local",
+		["https://codeforces.com/contest/(%d+)/problem/(%w+)"] = "~/code/contest/codeforces",
 		["https://codeforces.com/problemset/problem/(%d+)/(%w+)"] = "~/code/contest/codeforces",
-		-- ["https://atcoder.jp/contests/(%d+)/tasks/(%w+%p%d)"]
 	},
 	layouts = {
 		floating = {},
 		default = {
 			cmd = "set nosplitright | vs | setl wfw | wincmd w | bel sp | vs | vs | 1wincmd w",
-			order = {1, 2, 3, 4, 5}, -- source, errors, input, output, expected output
+			order = {1, 2, 3, 4, 5}, -- main, errors, input, output, expected output
 		},
 	},
-	default_layout = "default"
+	default_layout = "default",
+	langs = {
+    cpp = {
+			main = {"sol.cpp", "g++ -Wall -O2 -o sol", "./sol"},
+			brute = {"brute.cpp", "g++ -Wall -O2 -o brute", "./brute"},
+			gen = {"gen.cpp", "g++ -Wall -O2 -o gen", "./gen"},
+		}
+  },
+	default_lang = "cpp"
 }
 
 function M.highlight()
@@ -42,8 +51,8 @@ end
 
 function M.setup(user_config)
 	_G.cp_config = vim.tbl_deep_extend("force", user_config, default_config)
+	_G.cp_problem = {}
 	_G.cp_problems = {}
-	_G.cp_cur_problem = 0
 
 	local load_command = function(cmd, ...)
 		local args = { ... }
@@ -87,7 +96,14 @@ function M.setup(user_config)
 		end,
 	})
 
-	-- Tabline support
+	vim.api.nvim_create_autocmd("TabEnter", {
+		pattern = "*",
+		callback = function()
+			require("cp.problem"):problem(vim.api.nvim_get_current_tabpage())
+		end
+	})
+
+	-- Tabline custom support, deprecated
 	vim.cmd[[
 		function CpTab(num, clicks, button, flags)
 			execute "lua require'cp.layout'.tab(" . a:num . ")"

@@ -6,6 +6,13 @@ return {
 		complete = function()
 		end
 	},
+	test = {
+		run = function(t)
+			_G.cp_problem:test(tonumber(t[1]))
+		end,
+		complete = function()
+		end
+	},
 	run = {
 		run = function(test)
 			local t = test[1]
