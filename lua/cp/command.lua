@@ -9,7 +9,9 @@ return {
 		run = function(t)
 			_G.cp_problem:test(tonumber(t[1]))
 		end,
-		complete = function() end,
+		complete = function()
+			-- return require("cp.problem".get_tests)
+		end,
 	},
 	run = {
 		run = function(test)

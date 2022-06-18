@@ -40,8 +40,10 @@ function M:tabline()
 end
 
 function M:problem(index)
-	self = _G.cp_problems[index]
-	_G.cp_problem = self
+	_G.cp_problem =_G.cp_problems[index]
+	vim.pretty_print(_G.cp_problems)
+	self = _G.cp_problem
+	vim.api.nvim_set_current_dir(self.path)
 end
 
 function M:wincmd(type, cmd)
