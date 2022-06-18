@@ -6,19 +6,6 @@ A plugin written in lua for Competitive Programming
 
 # Preview
 
-# Features
-
-- Problem parser (https://github.com/jmerle/competitive-companion)
-- Multiple problem
-- Extensive multitest
-- Hotkey submit (https://github.com/xalanq/cf-tool)
-- Stresstest
-- Terminal intergration
-
-- GDB support (https://github.com/mfussenegger/nvim-dap)
-
-Note: To see all the available functions use
-
 # Installation
 
 ```lua
@@ -97,3 +84,13 @@ vim.keymap.set('n', 't', function()
 	vim.cmd("Cp test " .. vim.v.count)
 end)
 ```
+
+# Features
+
+- Problem parser (https://github.com/jmerle/competitive-companion)
+- Multiple problem
+- Extensive multitest
+- Hotkey submit (https://github.com/xalanq/cf-tool)
+- Stresstest
+- Terminal intergration
+- GDB support (https://github.com/mfussenegger/nvim-dap)
