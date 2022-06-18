@@ -11,38 +11,38 @@ local default_config = {
 		floating = {},
 		default = {
 			cmd = "set nosplitright | vs | setl wfw | wincmd w | bel sp | vs | vs | 1wincmd w",
-			order = {1, 2, 3, 4, 5}, -- main, errors, input, output, expected output
+			order = { 1, 2, 3, 4, 5 }, -- main, errors, input, output, expected output
 		},
 	},
 	default_layout = "default",
 	langs = {
-    cpp = {
-			main = {"sol.cpp", "g++ -Wall -O2 -o sol", "./sol"},
-			brute = {"brute.cpp", "g++ -Wall -O2 -o brute", "./brute"},
-			gen = {"gen.cpp", "g++ -Wall -O2 -o gen", "./gen"},
-		}
-  },
-	default_lang = "cpp"
+		cpp = {
+			main = { "sol.cpp", "g++ -Wall -O2 -o sol", "./sol" },
+			brute = { "brute.cpp", "g++ -Wall -O2 -o brute", "./brute" },
+			gen = { "gen.cpp", "g++ -Wall -O2 -o gen", "./gen" },
+		},
+	},
+	default_lang = "cpp",
 }
 
 function M.highlight()
 	-- Create Cp highlight groups
 	local highlight_groups = {
-		CpHD  = { fg = "#ffffff", bg = "#000000" },
+		CpHD = { fg = "#ffffff", bg = "#000000" },
 		CpfHD = { fg = "#000000", bg = "#ffffff" },
-		CpNA  = { fg = "#ffffff", bg = "#ABB2BF" },
+		CpNA = { fg = "#ffffff", bg = "#ABB2BF" },
 		CpfNA = { fg = "#000000", bg = "#ABB2BF" },
-		CpPD  = { fg = "#C678DD", bg = "#ffffff" },
+		CpPD = { fg = "#C678DD", bg = "#ffffff" },
 		CpfPD = { fg = "#000000", bg = "#ABB2BF" },
-		CpAC  = { fg = "#ffffff", bg = "#98C379" },
+		CpAC = { fg = "#ffffff", bg = "#98C379" },
 		CpfAC = { fg = "#000000", bg = "#98C379" },
-		CpWA  = { fg = "#ffffff", bg = "#E06C75" },
+		CpWA = { fg = "#ffffff", bg = "#E06C75" },
 		CpfWA = { fg = "#000000", bg = "#E06C75" },
-		CpRE  = { fg = "#ffffff", bg = "#61AFEF" },
+		CpRE = { fg = "#ffffff", bg = "#61AFEF" },
 		CpfRE = { fg = "#000000", bg = "#61AFEF" },
-		CpTL  = { fg = "#ffffff", bg = "#E5C07B" },
+		CpTL = { fg = "#ffffff", bg = "#E5C07B" },
 		CpfTL = { fg = "#000000", bg = "#E5C07B" },
-		CpFL  = { fg = "#000000", bg = "NONE"}
+		CpFL = { fg = "#000000", bg = "NONE" },
 	}
 	for name, val in pairs(highlight_groups) do
 		vim.api.nvim_set_hl(0, name, val)
@@ -83,7 +83,7 @@ function M.setup(user_config)
 					end, extension.complete())
 				end
 			end
-		end
+		end,
 	})
 
 	-- create highlight groups
@@ -100,11 +100,11 @@ function M.setup(user_config)
 		pattern = "*",
 		callback = function()
 			require("cp.problem"):problem(vim.api.nvim_get_current_tabpage())
-		end
+		end,
 	})
 
 	-- Tabline custom support, deprecated
-	vim.cmd[[
+	vim.cmd [[
 		function CpTab(num, clicks, button, flags)
 			execute "lua require'cp.layout'.tab(" . a:num . ")"
 		endfunction

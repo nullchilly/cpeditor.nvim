@@ -1,17 +1,15 @@
 return {
 	receive = {
 		run = function()
-			require("cp.receive")
+			require "cp.receive"
 		end,
-		complete = function()
-		end
+		complete = function() end,
 	},
 	test = {
 		run = function(t)
 			_G.cp_problem:test(tonumber(t[1]))
 		end,
-		complete = function()
-		end
+		complete = function() end,
 	},
 	run = {
 		run = function(test)
@@ -22,6 +20,6 @@ return {
 		end,
 		complete = function()
 			return { "all" }
-		end
-	}
+		end,
+	},
 }
