@@ -44,12 +44,12 @@ require("cp").setup {
 	},
 	default_layout = "default",
 	langs = {
-    cpp = {
+		cpp = {
 			main = {"sol.cpp", "g++ -Wall -O2 -o sol", "./sol"},
 			brute = {"brute.cpp", "g++ -Wall -O2 -o brute", "./brute"},
 			gen = {"gen.cpp", "g++ -Wall -O2 -o gen", "./gen"},
 		}
-  },
+	},
 	default_lang = "cpp"
 }
 ```
@@ -72,7 +72,7 @@ require("bufferline").setup {
 				padding = 1,
 			},
 		},
-		name_formatter = function(tab)  -- tab contains a "name", "path" and "tabnr"
+		name_formatter = function(tab)	-- tab contains a "name", "path" and "tabnr"
 			local error, problem_name = pcall(function() return vim.api.nvim_tabpage_get_var(tab.tabnr, "cp_problem_name") end)
 			if error == false then
 				return tab.name
