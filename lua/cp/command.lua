@@ -11,7 +11,7 @@ return {
 			-- if t == "all" then
 			-- end
 			t = tonumber(t)
-		CpProblem:test(t)
+			CpProblem:test(t)
 		end,
 		complete = function()
 			return table.insert(vim.tbl_keys(CpProblem.result), "all")
