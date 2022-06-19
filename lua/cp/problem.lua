@@ -2,6 +2,10 @@ local M = {}
 local path = require "plenary.path"
 local config = _G.cp_config
 
+local function redraw()
+	vim.cmd "redrawtabline"
+end
+
 local function parse_link(url)
 	for link, dir in pairs(config.links) do
 		for k, v in (url):gmatch(link) do
@@ -41,7 +45,6 @@ end
 
 function M:problem(index)
 	_G.cp_problem =_G.cp_problems[index]
-	vim.pretty_print(_G.cp_problems)
 	self = _G.cp_problem
 	vim.api.nvim_set_current_dir(self.path)
 end
@@ -89,148 +92,129 @@ end
 
 -- TODO: refactor old codes below
 function M:insert(t)
-	local s = P[N]
-	s.result[t] = "NA"
-	os.execute(string.format("mkdir -p %s/tests/%d", s.problemPath, t))
-	test(t)
-	info "w"
-	inp "w"
-	out "w"
-	ans "w"
+	self.result[t] = "NA"
+	path:new(self.path):joinpath(t):mkdir({exists_ok = true})
+	M:test(t)
 end
 
 function M:erase(t)
-	local s = P[N]
 	if not t then
-		t = s.curTest
+		t = self.curTest
 	end
-	os.execute(string.format("rm -r %s/tests/%d", s.problemPath, t))
-	s.result[t] = nil
-	tabline()
+	path:new(self.path):joinpath(t):rm()
+	self.result[t] = nil
+	redraw()
 end
 
 function M:hide_show(t)
-	s = P[N]
 	if not t then
-		t = s.curTest
+		t = self.curTest
 	end
-	if s.result[t] == "HD" then
-		s.result[t] = "NA"
+	if self.result[t] == "HD" then
+		self.result[t] = "NA"
 	else
-		s.result[t] = "HD"
+		self.result[t] = "HD"
 	end
-	tabline()
+	redraw()
 end
 
 function M:show_all()
-	for t, v in pairs(self.result) do
-		if s.result[t] == "HD" then
-			s.result[t] = "NA"
+	for t, _ in pairs(self.result) do
+		if self.result[t] == "HD" then
+			self.result[t] = "NA"
 		end
 	end
-	tabline()
+	redraw()
 end
 
 function M:invert()
-	s = P[N]
-	for t, v in pairs(self.result) do
-		if s.result[t] == "HD" then
-			s.result[t] = "NA"
+	for t, _ in pairs(self.result) do
+		if self.result[t] == "HD" then
+			self.result[t] = "NA"
 		else
-			s.result[t] = "HD"
+			self.result[t] = "HD"
 		end
 	end
-	tabline()
+	redraw()
 end
 
 function M:hide(stat)
-	s = P[N]
-	for t, v in pairs(s.result) do
+	for t, v in pairs(self.result) do
 		if v == stat then
-			s.result[t] = "HD"
+			self.result[t] = "HD"
 		end
 	end
-	tabline()
+	redraw()
 end
 
 function M:run(t)
-	local s = P[N]
 	if t then
-		inp "w"
+		self:wincmd("inp", "w")
 	else
-		t = P[N].curTest
-		for i, _ in pairs(s.result) do
-			s.result[i] = "PD"
+		t = self.curTest
+		for i, _ in pairs(self.result) do
+			self.result[i] = "PD"
 		end
 	end
-	s.result[t] = "PD"
-	tabline()
+	self.result[t] = "PD"
+	redraw()
 	local timer = 0
 	local tle = nil
 	local job = vim.fn.jobstart(
 		string.format(
 			"cd %s && %s < tests/%d/%d.in > tests/%d/%d.out 2> tests/%d/%d.err",
-			s.problemPath,
-			s.lang[3],
-			t,
-			t,
-			t,
-			t,
-			t,
-			t
-		),
-		{
+			self.problemPath, self.lang[3], t, t, t, t, t, t), {
 			on_exit = function(_, exitCode, _)
 				vim.fn.timer_stop(timer)
-				if t == s.curTest then
-					info(string.format("e! tests/%d/%d.err", t, t))
-					out "e!"
+				if t == self.curTest then
+					self:wincmd("info", string.format("e! tests/%d/%d.err", t, t))
+					self:wincmd("out", "e!")
 				end
 				if exitCode == 0 then
-					local comp = vim.fn.jobstart(string.format("diff -qbB tests/%d/%d.out tests/%d/%d.ans", t, t, t, t), {
-						on_exit = function(_, e, _)
-							if e == 0 then
-								s.result[t] = "AC"
+					vim.fn.jobstart(string.format("diff -qbB tests/%d/%d.out tests/%d/%d.ans", t, t, t, t), {
+						on_exit = function(_, comp, _)
+							if comp == 0 then
+								self.result[t] = "AC"
 							else
-								s.result[t] = "WA"
+								self.result[t] = "WA"
 							end
-							tabline()
+							redraw()
 						end,
 					})
 				else
 					if tle then
-						s.result[t] = "TL"
+						self.result[t] = "TL"
 					else
-						s.result[t] = "RE"
+						self.result[t] = "RE"
 					end
-					tabline()
-					if t == s.curTest then
-						info(string.format("e! tests/%d/%d.err", t, t))
+					redraw()
+					if t == self.curTest then
+						self:wincmd("info", string.format("e! tests/%d/%d.err", t, t))
 					end
-					out "e"
+					self:wincmd("out", "e")
 				end
 			end,
 		}
 	)
-	timer = vim.fn.timer_start(s.timeout, function()
+	timer = vim.fn.timer_start(self.timeout, function()
 		vim.fn.jobstop(job)
 		tle = 1
 	end)
 end
 
 function M:compile(all)
-	local s = P[N]
 	if all then
 		vim.cmd "wa"
 	else
-		main "w"
+		self:wincmd("main", "w")
 	end
-	io.open(string.format("%s/.info", s.problemPath), "w"):close()
-	local f = io.open(string.format("%s/.info", s.problemPath), "a")
+	io.open(string.format("%s/.info", self.path), "w"):close()
+	local f = io.open(string.format("%s/.info", self.path), "a")
+	-- TODO: change to buffer attach
 	f:write "[Compiling...]\n"
 	f:flush()
-	info "e .info"
-	local job = vim.fn.jobstart(s.lang[2] .. " " .. s.lang[1], {
+	self:wincmd("info", "e .info")
+	local job = vim.fn.jobstart(self.lang[2] .. " " .. self.lang[1], {
 		on_stderr = function(_, data, _)
 			for _, d in ipairs(data) do
 				f:write(d .. "\n")
@@ -240,9 +224,9 @@ function M:compile(all)
 			if exitCode == 0 then
 				f:write "[Compiled]"
 				if all then
-					for i, _ in pairs(s.result) do
-						if s.result[i] ~= "HD" then
-							run(i, 0)
+					for i, _ in pairs(self.result) do
+						if self.result[i] ~= "HD" then
+							self:run(i, 0)
 						end
 					end
 				end
@@ -250,7 +234,7 @@ function M:compile(all)
 				f:write "[Compile Error]"
 			end
 			f:close()
-			info "e! .info"
+			self:wincmd("info", "e! .info")
 		end,
 	})
 end
@@ -258,7 +242,6 @@ end
 function M:open()
 	vim.cmd(config.layouts[config.default_layout].cmd)
 	self.win_id = vim.api.nvim_tabpage_list_wins(0)
-	vim.pretty_print(self.layout)
 	self:sol(config.default_lang)
 	self:layout()
 end
@@ -277,9 +260,6 @@ function M:new(data)
 			return
 		end
 	end
-	if #_G.cp_problems ~= 0 then
-		vim.cmd "$tabnew"
-	end
 	local obj = {
 		name = problem_name,
 		path = problem_path.filename,
@@ -293,11 +273,14 @@ function M:new(data)
 	_G.cp_problem = obj
 	table.insert(_G.cp_problems, _G.cp_problem)
 	for i, test in pairs(data.tests) do
-		self.result[i] = "NA"
+		self.result = "NA"
 		i = tostring(i)
 		problem_path:joinpath(i):mkdir { exists_ok = true, parents = true }
 		problem_path:joinpath(i, i .. ".in"):write(test.input, "w")
 		problem_path:joinpath(i, i .. ".ans"):write(test.output, "w")
+	end
+	if #_G.cp_problems ~= 1 then
+		vim.cmd "$tabnew"
 	end
 	vim.t.cp_problem_name = problem_name
 	vim.api.nvim_set_current_dir(self.path)

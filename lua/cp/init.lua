@@ -1,7 +1,10 @@
 local M = {}
 
 local default_config = {
-	bufferline_integration = true,
+	integration = {
+		bufferline = true,
+		nvim_dap = true
+	},
 	links = {
 		["local"] = "~/code/local",
 		["https://codeforces.com/contest/(%d+)/problem/(%w+)"] = "~/code/contest/codeforces",

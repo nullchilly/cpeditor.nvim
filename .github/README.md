@@ -11,14 +11,32 @@ A plugin written in lua for Competitive Programming
 # Installation
 
 ```lua
-use 'nullchilly/cp.nvim'
+use {
+	'nullchilly/cp.nvim'
+	requires = 'nvim-lua/plenary.nvim'
+}
 ```
+
+# Features (Will update later)
+
+- Problem parser
+https://github.com/jmerle/competitive-companion
+- Hotkey submit
+https://github.com/xalanq/cf-tool
+- Debugging
+Work in progress
+- Stresstest
+Work in progress
+- GDB support (https://github.com/mfussenegger/nvim-dap)
 
 # Setup
 
 ```lua
 require("cp").setup {
-	bufferline_integration = false,
+	integration = {
+		bufferline = true,
+		nvim_dap = true
+	},
 	links = {
 		["local"] = "~/code/local",
 		["https://codeforces.com/contest/(%d+)/problem/(%w+)"] = "~/code/contest/codeforces",
@@ -46,7 +64,6 @@ require("cp").setup {
 # Integrations
 
 - Bufferline
-set `bufferline_integration = true`, example config:
 ```lua
 require("bufferline").setup {
 	options = {
@@ -79,20 +96,16 @@ require("bufferline").setup {
 }
 ```
 
-# Keymaps
+- Nvim DAP
+
+# Example keymaps
 ```lua
-vim.keymap.set("n", "<leader>x", "<cmd> tabclose <CR>") --"	close buffer"
+vim.keymap.set("n", "<leader>x", "<cmd> tabclose <CR>") -- 	close tab
 vim.keymap.set('n', 't', function()
 	vim.cmd("Cp test " .. vim.v.count)
 end)
 ```
 
-# Features
-
-- Problem parser (https://github.com/jmerle/competitive-companion)
-- Multiple problem
-- Extensive multitest
-- Hotkey submit (https://github.com/xalanq/cf-tool)
-- Stresstest
-- Terminal intergration
-- GDB support (https://github.com/mfussenegger/nvim-dap)
+# Acknowledgement
+- https://github.com/p00f/cphelper.nvim My initial motivation to write this plugin
+- https://github.com/xeluxee/competitest.nvim For great ideas
