@@ -109,3 +109,4 @@ end)
 # Acknowledgement
 - https://github.com/p00f/cphelper.nvim My initial motivation to write this plugin
 - https://github.com/xeluxee/competitest.nvim For great ideas
+- https://github.com/cpeditor/cpeditor/ For not merge vim support
