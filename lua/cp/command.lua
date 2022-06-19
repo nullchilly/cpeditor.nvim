@@ -21,15 +21,13 @@ return {
 		run = function()
 			CpProblem:compile()
 		end,
-		complete = function()
-		end
+		complete = function() end,
 	},
 	compile_run = {
 		run = function()
-			CpProblem:compile("all")
+			CpProblem:compile "all"
 		end,
-		complete = function()
-		end
+		complete = function() end,
 	},
 	run = {
 		run = function(test)

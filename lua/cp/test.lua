@@ -18,7 +18,7 @@ end
 
 function CpProblemClass:insert(t)
 	self.result[t] = "NA"
-	path:new(self.path):joinpath(t):mkdir({exists_ok = true})
+	path:new(self.path):joinpath(t):mkdir { exists_ok = true }
 	CpProblemClass:test(t)
 end
 
@@ -85,42 +85,38 @@ function CpProblemClass:run(t)
 	redraw()
 	local timer = 0
 	local tle = nil
-	local job = vim.fn.jobstart(
-		string.format(
-			"cd %s && %s < tests/%d/%d.in > tests/%d/%d.out 2> tests/%d/%d.err",
-			self.problemPath, self.lang[3], t, t, t, t, t, t), {
-			on_exit = function(_, exitCode, _)
-				vim.fn.timer_stop(timer)
+	local job = vim.fn.jobstart(string.format("cd %s && %s < tests/%d/%d.in > tests/%d/%d.out 2> tests/%d/%d.err", self.problemPath, self.lang[3], t, t, t, t, t, t), {
+		on_exit = function(_, exitCode, _)
+			vim.fn.timer_stop(timer)
+			if t == self.curTest then
+				self:wincmd("err", string.format("e! tests/%d/%d.err", t, t))
+				self:wincmd("out", "e!")
+			end
+			if exitCode == 0 then
+				vim.fn.jobstart(string.format("diff -qbB tests/%d/%d.out tests/%d/%d.ans", t, t, t, t), {
+					on_exit = function(_, comp, _)
+						if comp == 0 then
+							self.result[t] = "AC"
+						else
+							self.result[t] = "WA"
+						end
+						redraw()
+					end,
+				})
+			else
+				if tle then
+					self.result[t] = "TL"
+				else
+					self.result[t] = "RE"
+				end
+				redraw()
 				if t == self.curTest then
 					self:wincmd("err", string.format("e! tests/%d/%d.err", t, t))
-					self:wincmd("out", "e!")
 				end
-				if exitCode == 0 then
-					vim.fn.jobstart(string.format("diff -qbB tests/%d/%d.out tests/%d/%d.ans", t, t, t, t), {
-						on_exit = function(_, comp, _)
-							if comp == 0 then
-								self.result[t] = "AC"
-							else
-								self.result[t] = "WA"
-							end
-							redraw()
-						end,
-					})
-				else
-					if tle then
-						self.result[t] = "TL"
-					else
-						self.result[t] = "RE"
-					end
-					redraw()
-					if t == self.curTest then
-						self:wincmd("err", string.format("e! tests/%d/%d.err", t, t))
-					end
-					self:wincmd("out", "e")
-				end
-			end,
-		}
-	)
+				self:wincmd("out", "e")
+			end
+		end,
+	})
 	timer = vim.fn.timer_start(self.timeout, function()
 		vim.fn.jobstop(job)
 		tle = 1
@@ -160,6 +156,6 @@ function CpProblemClass:compile(all)
 			end
 			f:close()
 			self:wincmd("err", "e! .err")
-		end
+		end,
 	})
 end

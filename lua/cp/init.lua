@@ -3,7 +3,7 @@ local M = {}
 local default_config = {
 	integration = {
 		bufferline = true,
-		nvim_dap = true
+		nvim_dap = true,
 	},
 	links = {
 		["local"] = "~/code/local",
@@ -57,9 +57,9 @@ function M.setup(user_config)
 	CpProblemClass = {}
 	CpProblemList = {}
 	CpProblem = {}
-	require("cp.problem")
-	require("cp.test")
-	require("cp.layout")
+	require "cp.problem"
+	require "cp.test"
+	require "cp.layout"
 
 	local load_command = function(cmd, ...)
 		local args = { ... }
