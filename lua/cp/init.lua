@@ -117,9 +117,9 @@ function M.setup(user_config)
 		endfunction
 		function CpTest(num, clicks, button, flags)
 			if a:button == 'r'
-				execute "lua require'cp.test'.hide_show(" . a:num . ")"
+				execute "lua CpProblem:hide_show(" . a:num . ")"
 			else
-				execute "lua require'cp.test'.switch(" . a:num . ")"
+				execute "lua CpProblem:test(" . a:num . ")"
 			endif
 		endfunction]]
 end

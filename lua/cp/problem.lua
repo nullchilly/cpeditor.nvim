@@ -27,6 +27,7 @@ function CpProblemClass:new(data)
 		name = problem_name,
 		path = problem_path.filename,
 		tab_id = vim.api.nvim_get_current_tabpage(),
+		timeout = data.timeLimit,
 		curTest = 1,
 		result = {},
 	}
