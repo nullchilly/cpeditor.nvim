@@ -110,7 +110,7 @@ function M.setup(user_config)
 		end,
 	})
 
-	-- Tabline custom support, deprecated
+	-- Tabline custom support, deprecated by neovim 0.8
 	vim.cmd [[
 		function CpTab(num, clicks, button, flags)
 			execute "lua require'cp.layout'.tab(" . a:num . ")"

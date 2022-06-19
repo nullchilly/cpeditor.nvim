@@ -1,5 +1,19 @@
 local config = CpConfig
 
+-- neovim 0.8 only
+function CpTab(num, clicks, button, flags)
+	CpProblem:tab(num)
+end
+
+function CpTest(num, clicks, button, flags)
+	if button == "r" then
+		CpProblem:hide_show(num)
+	else
+		CpProblem:switch(num)
+	end
+	CpProblem:test(num)
+end
+
 function CpProblemClass:tabline()
 	local res = ""
 	if config.bufferline_integration == false then
@@ -17,6 +31,7 @@ function CpProblemClass:tabline()
 		return
 	end
 	for i, v in pairs(self.result) do
+		print(i, v)
 		res = res .. "%#Cp"
 		if i == self.curTest then
 			res = res .. "f"

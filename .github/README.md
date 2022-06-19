@@ -71,17 +71,7 @@ require("cp").setup {
 require("bufferline").setup {
 	options = {
 		mode = "tabs",
-		close_command = "tabclose",
-		right_mouse_command = "tabclose",
-		left_mouse_command = "tabnew %d",
-		offsets = {
-			{
-				filetype = "NvimTree",
-				text = "",
-				padding = 1,
-			},
-		},
-		name_formatter = function(tab)	-- tab contains a "name", "path" and "tabnr"
+		name_formatter = function(tab)
 			local error, problem_name = pcall(function() return vim.api.nvim_tabpage_get_var(tab.tabnr, "cp_problem_name") end)
 			if error == false then
 				return tab.name

@@ -7,15 +7,28 @@ return {
 	},
 	test = {
 		run = function(t)
-			CpProblem:test(tonumber(t[1]))
+			t = t[1]
+			-- if t == "all" then
+			-- end
+			t = tonumber(t)
+			CpProblem:test(t)
 		end,
 		complete = function()
-			-- return require("cp.problem".get_tests)
+			return table.insert(vim.tbl_keys(CpProblem.result), "all")
 		end,
 	},
 	compile = {
-		run = function(test)
-			local t = test[1]
+		run = function()
+			CpProblem:compile()
+		end,
+		complete = function()
+		end
+	},
+	compile_run = {
+		run = function()
+			CpProblem:compile("all")
+		end,
+		complete = function()
 		end
 	},
 	run = {

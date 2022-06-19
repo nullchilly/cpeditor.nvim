@@ -151,7 +151,7 @@ function CpProblemClass:compile(all)
 				if all then
 					for i, _ in pairs(self.result) do
 						if self.result[i] ~= "HD" then
-							self:run(i, 0)
+							self:run(i)
 						end
 					end
 				end
