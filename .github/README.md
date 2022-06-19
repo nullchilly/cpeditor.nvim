@@ -34,8 +34,8 @@ Work in progress
 ```lua
 require("cp").setup {
 	integration = {
-		bufferline = true,
-		nvim_dap = true
+		bufferline = false,
+		nvim_dap = false
 	},
 	links = {
 		["local"] = "~/code/local",
