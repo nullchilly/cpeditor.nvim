@@ -7,7 +7,7 @@ return {
 	},
 	test = {
 		run = function(t)
-			_G.cp_problem:test(tonumber(t[1]))
+			CpProblem:test(tonumber(t[1]))
 		end,
 		complete = function()
 			-- return require("cp.problem".get_tests)
@@ -22,12 +22,12 @@ return {
 		run = function(test)
 			local t = test[1]
 			if t == "all" then
-				_G.cp_problem:compile()
+				CpProblem:compile()
 			end
 			if t ~= "all" then
 				t = tonumber(t)
 			end
-			_G.cp_problem:run(t)
+			CpProblem:run(t)
 		end,
 		complete = function()
 			return { "all" }
