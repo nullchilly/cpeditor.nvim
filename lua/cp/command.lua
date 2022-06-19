@@ -13,12 +13,21 @@ return {
 			-- return require("cp.problem".get_tests)
 		end,
 	},
+	compile = {
+		run = function(test)
+			local t = test[1]
+		end
+	},
 	run = {
 		run = function(test)
 			local t = test[1]
 			if t == "all" then
-				print "ran all of em"
+				_G.cp_problem:compile()
 			end
+			if t ~= "all" then
+				t = tonumber(t)
+			end
+			_G.cp_problem:run(t)
 		end,
 		complete = function()
 			return { "all" }

@@ -56,6 +56,10 @@ function M.setup(user_config)
 	_G.cp_config = vim.tbl_deep_extend("force", user_config, default_config)
 	_G.cp_problem = {}
 	_G.cp_problems = {}
+	Problem = {}
+	require("cp.problem")
+	require("cp.test")
+	require("cp.layout")
 
 	local load_command = function(cmd, ...)
 		local args = { ... }

@@ -20,14 +20,17 @@ use {
 # Features (Will update later)
 
 - Problem parser
+
 https://github.com/jmerle/competitive-companion
 - Hotkey submit
+
 https://github.com/xalanq/cf-tool
 - Debugging
+
 Work in progress
 - Stresstest
+
 Work in progress
-- GDB support (https://github.com/mfussenegger/nvim-dap)
 
 # Setup
 
@@ -96,7 +99,7 @@ require("bufferline").setup {
 }
 ```
 
-- Nvim DAP
+- nvim-dap
 
 # Example keymaps
 ```lua

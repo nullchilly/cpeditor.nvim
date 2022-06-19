@@ -20,7 +20,7 @@ Server:listen(128, function(err)
 			end
 			buffer = lines[#lines]
 			vim.schedule(function()
-				require("cp.problem"):new(vim.fn.json_decode(buffer))
+				Problem:new(vim.fn.json_decode(buffer))
 			end)
 			Server:shutdown()
 		end
