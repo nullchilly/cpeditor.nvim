@@ -1,9 +1,9 @@
-local config = _G.cp_config
+local config = CpConfig
 
-function Problem:tabline()
+function CpProblemClass:tabline()
 	local res = ""
 	if config.bufferline_integration == false then
-		for i, v in ipairs(_G.cp_problems) do
+		for i, v in ipairs(CpProblemList) do
 			if vim.api.nvim_get_current_tabpage() == v.tab_id then
 				res = res .. "%#CpfNA#"
 			else
@@ -29,14 +29,13 @@ function Problem:tabline()
 	return res
 end
 
-function Problem:problem(index)
-	_G.cp_problem =_G.cp_problems[index]
-	self = _G.cp_problem
-	print(self.path)
+function CpProblemClass:problem(index)
+	CpProblem = CpProblemList[index]
+	self = CpProblem
 	vim.cmd("tcd " .. self.path)
 end
 
-function Problem:wincmd(type, cmd)
+function CpProblemClass:wincmd(type, cmd)
 	local convert = {
 		main = self.win_id[1],
 		err = self.win_id[2],
@@ -53,20 +52,19 @@ function Problem:wincmd(type, cmd)
 	end)
 end
 
-function Problem:layout()
+function CpProblemClass:layout()
 	self:wincmd("main", "e!" .. self.lang.main[1])
 	self:wincmd("err", "e! .err | set ft=cpp")
 	self:test(self.curTest)
 end
 
-function Problem:sol(L)
+function CpProblemClass:sol(L)
 	self.lang = config.langs[L]
-	vim.pretty_print(self.lang.main)
 	self:wincmd("main", "e! " .. self.lang.main[1])
 	self:wincmd("err", "e! .err | set ft=" .. L)
 end
 
-function Problem:open()
+function CpProblemClass:open()
 	vim.cmd(config.layouts[config.default_layout].cmd)
 	self.win_id = vim.api.nvim_tabpage_list_wins(0)
 	self:sol(config.default_lang)

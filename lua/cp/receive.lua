@@ -20,7 +20,7 @@ Server:listen(128, function(err)
 			end
 			buffer = lines[#lines]
 			vim.schedule(function()
-				Problem:new(vim.fn.json_decode(buffer))
+				CpProblemClass:new(vim.fn.json_decode(buffer))
 			end)
 			Server:shutdown()
 		end

@@ -53,10 +53,10 @@ function M.highlight()
 end
 
 function M.setup(user_config)
-	_G.cp_config = vim.tbl_deep_extend("force", user_config, default_config)
-	_G.cp_problem = {}
-	_G.cp_problems = {}
-	Problem = {}
+	CpConfig = vim.tbl_deep_extend("force", user_config, default_config)
+	CpProblemClass = {}
+	CpProblemList = {}
+	CpProblem = {}
 	require("cp.problem")
 	require("cp.test")
 	require("cp.layout")
@@ -106,7 +106,7 @@ function M.setup(user_config)
 	vim.api.nvim_create_autocmd("TabEnter", {
 		pattern = "*",
 		callback = function()
-			require("cp.problem"):problem(vim.api.nvim_get_current_tabpage())
+			CpProblem:problem(vim.api.nvim_get_current_tabpage())
 		end,
 	})
 

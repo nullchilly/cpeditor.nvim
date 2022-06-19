@@ -1,5 +1,5 @@
 local path = require "plenary.path"
-local config = _G.cp_config
+local config = CpConfig
 
 local function parse_link(url)
 	for link, dir in pairs(config.links) do
@@ -9,7 +9,7 @@ local function parse_link(url)
 	end
 end
 
-function Problem:new(data)
+function CpProblemClass:new(data)
 	local k, v, dir = unpack(parse_link(data.url))
 	local contest_dir = path:new(dir)
 	contest_dir = path:new(contest_dir:expand())
@@ -17,7 +17,7 @@ function Problem:new(data)
 	problem_path:joinpath "tests"
 	problem_path:mkdir { exists_ok = true, parents = true }
 	local problem_name = k .. v
-	for _, p in ipairs(_G.cp_problems) do
+	for _, p in ipairs(CpProblemList) do
 		if p.name == problem_name then
 			vim.api.nvim_set_current_tabpage(p.tab_id)
 			return
@@ -33,16 +33,16 @@ function Problem:new(data)
 	setmetatable(obj, self)
 	self.__index = self
 	self = obj
-	_G.cp_problem = obj
-	table.insert(_G.cp_problems, _G.cp_problem)
+	CpProblem = obj
+	table.insert(CpProblemList, CpProblem)
 	for i, test in pairs(data.tests) do
-		self.result = "NA"
+		self.result[i] = "NA"
 		i = tostring(i)
 		problem_path:joinpath(i):mkdir { exists_ok = true, parents = true }
 		problem_path:joinpath(i, i .. ".in"):write(test.input, "w")
 		problem_path:joinpath(i, i .. ".ans"):write(test.output, "w")
 	end
-	if #_G.cp_problems ~= 1 then
+	if #CpProblemList ~= 1 then
 		vim.cmd "$tabnew"
 	end
 	vim.t.cp_problem_name = problem_name

@@ -1,11 +1,11 @@
 local path = require "plenary.path"
-local config = _G.cp_config
+local config = CpConfig
 
 local function redraw()
 	vim.cmd "redrawtabline"
 end
 
-function Problem:test(t)
+function CpProblemClass:test(t)
 	if not self.result[t] then
 		return
 	end
@@ -16,14 +16,13 @@ function Problem:test(t)
 	self.curTest = t
 end
 
--- TODO: refactor old codes below
-function Problem:insert(t)
+function CpProblemClass:insert(t)
 	self.result[t] = "NA"
 	path:new(self.path):joinpath(t):mkdir({exists_ok = true})
-	Problem:test(t)
+	CpProblemClass:test(t)
 end
 
-function Problem:erase(t)
+function CpProblemClass:erase(t)
 	if not t then
 		t = self.curTest
 	end
@@ -32,7 +31,7 @@ function Problem:erase(t)
 	redraw()
 end
 
-function Problem:hide_show(t)
+function CpProblemClass:hide_show(t)
 	if not t then
 		t = self.curTest
 	end
@@ -44,7 +43,7 @@ function Problem:hide_show(t)
 	redraw()
 end
 
-function Problem:show_all()
+function CpProblemClass:show_all()
 	for t, _ in pairs(self.result) do
 		if self.result[t] == "HD" then
 			self.result[t] = "NA"
@@ -53,7 +52,7 @@ function Problem:show_all()
 	redraw()
 end
 
-function Problem:invert()
+function CpProblemClass:invert()
 	for t, _ in pairs(self.result) do
 		if self.result[t] == "HD" then
 			self.result[t] = "NA"
@@ -64,7 +63,7 @@ function Problem:invert()
 	redraw()
 end
 
-function Problem:hide(stat)
+function CpProblemClass:hide(stat)
 	for t, v in pairs(self.result) do
 		if v == stat then
 			self.result[t] = "HD"
@@ -73,7 +72,7 @@ function Problem:hide(stat)
 	redraw()
 end
 
-function Problem:run(t)
+function CpProblemClass:run(t)
 	if t then
 		self:wincmd("inp", "w")
 	else
@@ -128,7 +127,7 @@ function Problem:run(t)
 	end)
 end
 
-function Problem:compile(all)
+function CpProblemClass:compile(all)
 	if all then
 		vim.cmd "wa"
 	else
