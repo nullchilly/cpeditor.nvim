@@ -17,13 +17,13 @@ end
 local commands = {
 	receive = {
 		run = function()
-			require "cpeditor.receive".start()
+			require("cpeditor.receive").start()
 		end,
 		complete = function() end,
 	},
 	stop = {
 		run = function()
-			require "cpeditor.receive".stop()
+			require("cpeditor.receive").stop()
 		end,
 		complete = function() end,
 	},

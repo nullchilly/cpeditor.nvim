@@ -13,7 +13,7 @@ local default_config = {
 	layouts = {
 		only = {
 			func = function() end,
-			order = { 1, 0, 0, 0, 0 }
+			order = { 1, 0, 0, 0, 0 },
 		},
 		split = {
 			func = function()
