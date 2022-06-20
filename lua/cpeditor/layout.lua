@@ -35,7 +35,9 @@ vim.cmd [[
 	endfunction
 ]]
 
-function M.tabline(problem, problemList)
+function M.tabline()
+	local problem = problems.current_problem
+	local problemList = problems.problemList
 	local res = ""
 	if config.bufferline_integration == false then
 		for i, v in ipairs(problemList) do
@@ -93,7 +95,7 @@ function M.open()
 	local problem = problems.current_problem
 	vim.cmd(config.layouts[config.default_layout].cmd)
 	problem.win_id = vim.api.nvim_tabpage_list_wins(0)
-	require"cpeditor.lang".set(config.default_lang)
+	require("cpeditor.lang").set(config.default_lang)
 	M.layout()
 end
 
