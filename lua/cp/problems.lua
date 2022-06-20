@@ -1,6 +1,6 @@
 local M = {
 	current_problem = nil,
-	problemList = {}
+	problemList = {},
 }
 
 local path = require "plenary.path"

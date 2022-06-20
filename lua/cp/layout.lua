@@ -1,7 +1,7 @@
 local M = {}
 
 local config = require("cp").config
-local problems = require("cp.problems")
+local problems = require "cp.problems"
 
 -- @v:lua@ in the tabline only supports global functions, so this is
 -- the only way to add click handlers without autoloaded vimscript functions

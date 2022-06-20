@@ -1,3 +1,6 @@
+local problem = require "cp.problems"
+local test = require "cp.test"
+
 return {
 	receive = {
 		run = function()
@@ -11,34 +14,34 @@ return {
 			-- if t == "all" then
 			-- end
 			t = tonumber(t)
-			CpProblem:test(t)
+			test.switch(t)
 		end,
 		complete = function()
-			return table.insert(vim.tbl_keys(CpProblem.result), "all")
+			return table.insert(vim.tbl_keys(problem.current_problem.result), "all")
 		end,
 	},
 	compile = {
 		run = function()
-			CpProblem:compile()
+			test.compile()
 		end,
 		complete = function() end,
 	},
 	compile_run = {
 		run = function()
-			CpProblem:compile "all"
+			test.compile "all"
 		end,
 		complete = function() end,
 	},
 	run = {
-		run = function(test)
-			local t = test[1]
+		run = function(t)
+			t = t[1]
 			if t == "all" then
-				CpProblem:compile()
+				test.compile()
 			end
 			if t ~= "all" then
 				t = tonumber(t)
 			end
-			CpProblem:run(t)
+			test.run(t)
 		end,
 		complete = function()
 			return { "all" }

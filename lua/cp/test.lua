@@ -1,8 +1,8 @@
 local M = {}
 
 local path = require "plenary.path"
-local problems = require("cp.problems")
-local layout = require("cp.layout")
+local problems = require "cp.problems"
+local layout = require "cp.layout"
 local config = require("cp").config
 
 local function redraw()
@@ -29,7 +29,7 @@ function M.insert(t)
 end
 
 function M.erase(t)
-		local problem = problems.current_problem
+	local problem = problems.current_problem
 	if not t then
 		t = problem.curTest
 	end
@@ -39,7 +39,7 @@ function M.erase(t)
 end
 
 function M.toggle(t)
-		local problem = problems.current_problem
+	local problem = problems.current_problem
 	if not t then
 		t = problem.curTest
 	end
@@ -52,7 +52,7 @@ function M.toggle(t)
 end
 
 function M.show_all()
-		local problem = problems.current_problem
+	local problem = problems.current_problem
 	for t, _ in pairs(problem.result) do
 		if problem.result[t] == "HD" then
 			problem.result[t] = "NA"
@@ -62,7 +62,7 @@ function M.show_all()
 end
 
 function M.invert()
-		local problem = problems.current_problem
+	local problem = problems.current_problem
 	for t, _ in pairs(problem.result) do
 		if problem.result[t] == "HD" then
 			problem.result[t] = "NA"
@@ -74,7 +74,7 @@ function M.invert()
 end
 
 function M.hide(stat)
-		local problem = problems.current_problem
+	local problem = problems.current_problem
 	for t, v in pairs(problem.result) do
 		if v == stat then
 			problem.result[t] = "HD"
@@ -84,7 +84,7 @@ function M.hide(stat)
 end
 
 function M.run(t)
-		local problem = problems.current_problem
+	local problem = problems.current_problem
 	if t then
 		M.wincmd("inp", "w")
 	else
