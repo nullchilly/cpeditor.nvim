@@ -95,7 +95,7 @@ require("bufferline").setup {
 ```lua
 vim.keymap.set("n", "<leader>x", "<cmd> tabclose <CR>") -- 	close tab
 vim.keymap.set('n', 't', function()
-	vim.cmd("Cp test " .. vim.v.count)
+	vim.cmd("Cpeditor test " .. vim.v.count)
 end)
 ```
 

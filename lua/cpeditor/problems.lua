@@ -18,6 +18,17 @@ function M.switch(index)
 	M.current_problem = M.problemList[index]
 end
 
+function M.build_test(tests, problem_path)
+	local problem = M.current_problem
+	for i, test in pairs(tests) do
+		problem.result[i] = "NA"
+		i = tostring(i)
+		problem_path:joinpath(i):mkdir { exists_ok = true, parents = true }
+		problem_path:joinpath(i, i .. ".in"):write(test.input, "w")
+		problem_path:joinpath(i, i .. ".ans"):write(test.output, "w")
+	end
+end
+
 function M.new(data)
 	local k, v, dir = unpack(parse_link(data.url))
 	local contest_dir = path:new(dir)
@@ -42,13 +53,7 @@ function M.new(data)
 	}
 	table.insert(M.problemList, M.current_problem)
 	local problem = M.current_problem
-	for i, test in pairs(data.tests) do
-		problem.result[i] = "NA"
-		i = tostring(i)
-		problem_path:joinpath(i):mkdir { exists_ok = true, parents = true }
-		problem_path:joinpath(i, i .. ".in"):write(test.input, "w")
-		problem_path:joinpath(i, i .. ".ans"):write(test.output, "w")
-	end
+	M.build_test(data.tests, problem_path)
 	if #M.problemList ~= 1 then
 		vim.cmd "$tabnew"
 	end

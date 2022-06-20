@@ -47,8 +47,8 @@ function M.highlight()
 		CpeditorfTL = { fg = "#000000", bg = "#E5C07B" },
 		CpeditorFL = { fg = "#000000", bg = "NONE" },
 	}
-	for name, val in pairs(highlight_groups) do
-		vim.api.nvim_set_hl(0, name, val)
+	for k, v in pairs(highlight_groups) do
+		vim.api.nvim_set_hl(0, k, v)
 	end
 end
 

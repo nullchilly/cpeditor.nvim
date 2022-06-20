@@ -1,2 +1,5 @@
+*cpeditor.txt* CP Editor is a plugin for competitive programming
 Until I figure how to autogen vim doc, read this:
 https://github.com/nullchilly/cpeditor.nvim#readme
+
+vim:ft=help

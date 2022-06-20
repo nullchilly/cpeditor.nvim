@@ -84,18 +84,16 @@ end
 
 function M.layout()
 	local problem = problems.current_problem
-	-- M.wincmd("main", "e!" .. problem.lang.main[1])
+	M.wincmd("main", "e!" .. problem.lang.main[1])
 	M.wincmd("err", "e! .err | set ft=cpeditor.")
-	vim.pretty_print(problem)
 	require("cpeditor.test").switch(problem.curTest)
 end
 
 function M.open()
 	local problem = problems.current_problem
-	print(config.layouts[config.default_layout].cmd)
 	vim.cmd(config.layouts[config.default_layout].cmd)
 	problem.win_id = vim.api.nvim_tabpage_list_wins(0)
-	-- problem:sol(config.default_lang)
+	require"cpeditor.lang".set(config.default_lang)
 	M.layout()
 end
 
