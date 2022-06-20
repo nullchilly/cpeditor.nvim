@@ -166,8 +166,7 @@ function M.compile(all)
 	io.open(string.format("%s/.err", problem.path), "w"):close()
 	local f = io.open(string.format("%s/.err", problem.path), "a")
 	-- TODO: change to buffer attach
-	f:write "[Compiling...]\n"
-	f:flush()
+	problem.status = "Compiling"
 	layout.wincmd("err", "e .err")
 	vim.fn.jobstart(problem.lang.main[2] .. " " .. problem.lang.main[1], {
 		on_stderr = function(_, data, _)
@@ -177,12 +176,12 @@ function M.compile(all)
 		end,
 		on_exit = function(_, exitCode, _)
 			if exitCode == 0 then
-				f:write "[Compiled]"
+				problem.status = "Compiled"
 				if all then
 					M.run_all()
 				end
 			else
-				f:write "[Compile Error]"
+				problem.status = "Compile Error"
 			end
 			f:close()
 			layout.wincmd("err", "e! .err")

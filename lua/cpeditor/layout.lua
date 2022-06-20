@@ -38,32 +38,47 @@ vim.cmd [[
 function M.tabline()
 	local problem = problems.current_problem
 	local problemList = problems.problemList
-	local res = ""
+	local component_problem = ""
 	if config.bufferline_integration == false then
 		for i, v in ipairs(problemList) do
 			if vim.api.nvim_get_current_tabpage() == v.tab_id then
-				res = res .. "%#CpeditorNA#"
+				component_problem = component_problem .. "%#CpeditorNA#"
 			else
-				res = res .. "%#CpeditorNA#"
+				component_problem = component_problem .. "%#CpeditorNA#"
 			end
-			res = res .. "%" .. i .. "@___cpeditor_private_" .. "tab@ " .. v.name .. " "
+			component_problem = component_problem .. "%" .. i .. "@___cpeditor_private_" .. "tab@ " .. v.name .. " "
 		end
-		res = res .. "%#CpeditorFL#%T%="
+		component_problem = component_problem .. "%#CpeditorFL#%T%="
 	end
 	if problem.result == nil then
 		return
 	end
+	local component_test = ""
+	local wa = 0
+	local ac = 0
+	local tot = 0
 	for i, v in pairs(problem.result) do
-		res = res .. "%#Cpeditor"
-		if i == problem.curTest then
-			res = res .. "f"
+		if v == "WA" then
+			wa = wa + 1
+		elseif v == "AC" then
+			ac = ac + 1
 		end
-		res = res .. v .. "#"
-		res = res .. "%" .. i .. "@___cpeditor_private_" .. "test@"
-		res = res .. " " .. i .. " "
+		tot = tot + 1
+		component_test = component_test .. "%#Cpeditor"
+		if i == problem.curTest then
+			component_test = component_test .. "f"
+		end
+		component_test = component_test .. v .. "#"
+		component_test = component_test .. "%" .. i .. "@___cpeditor_private_" .. "test@"
+		component_test = component_test .. " " .. i .. " "
 	end
 
-	return res
+	local component_status = problem.status or "Coding"
+	component_status = component_status .. " "
+
+	local component_count = "%#CpeditorWAcount# " .. tostring(wa) .. " %#CpeditorfFL#/" .. "%#CpeditorACcount# " .. tostring(ac) .. " %#CpeditorfFL#/ " .. tostring(tot) .. " "
+
+	return component_problem .. component_count .. component_status .. component_test
 end
 
 function M.wincmd(type, cmd)
