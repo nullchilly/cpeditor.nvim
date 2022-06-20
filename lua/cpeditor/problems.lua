@@ -20,6 +20,7 @@ end
 
 function M.build_test(tests, problem_path)
 	local problem = M.current_problem
+	problem_path = problem_path:joinpath "tests"
 	for i, test in pairs(tests) do
 		problem.result[i] = "NA"
 		i = tostring(i)
@@ -34,7 +35,6 @@ function M.new(data)
 	local contest_dir = path:new(dir)
 	contest_dir = path:new(contest_dir:expand())
 	local problem_path = contest_dir:joinpath(k, v)
-	problem_path:joinpath "tests"
 	problem_path:mkdir { exists_ok = true, parents = true }
 	local problem_name = k .. v
 	for _, p in ipairs(M.problemList) do

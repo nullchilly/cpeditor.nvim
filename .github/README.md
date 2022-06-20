@@ -1,9 +1,9 @@
 
 # WARNING: Work in progress, breaking changes everywhere
 
-# cp.nvim
+# cpeditor.nvim
 
-A plugin written in lua for Competitive Programming based on [cpeditor](https://github.com/cpeditor/cpeditor]
+A plugin written in lua for Competitive Programming based on [cpeditor](https://github.com/cpeditor/cpeditor)
 
 # Preview
 ![image](https://user-images.githubusercontent.com/56817415/174459273-c9e0fdbc-e06f-4d31-9e18-ab8ecd02e752.png)
