@@ -76,7 +76,14 @@ function M.tabline()
 	local component_status = problem.status or "Coding"
 	component_status = component_status .. " "
 
-	local component_count = "%#CpeditorWAcount# " .. tostring(wa) .. " %#CpeditorfFL#/" .. "%#CpeditorACcount# " .. tostring(ac) .. " %#CpeditorfFL#/ " .. tostring(tot) .. " "
+	local component_count = "%#CpeditorWAcount# "
+		.. tostring(wa)
+		.. " %#CpeditorfFL#/"
+		.. "%#CpeditorACcount# "
+		.. tostring(ac)
+		.. " %#CpeditorfFL#/ "
+		.. tostring(tot)
+		.. " "
 
 	return component_problem .. component_count .. component_status .. component_test
 end
