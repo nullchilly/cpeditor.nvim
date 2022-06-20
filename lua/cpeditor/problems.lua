@@ -51,7 +51,6 @@ function M.new(data)
 	M.current_problem = {
 		name = problem_name,
 		path = problem_path.filename,
-		tab_id = vim.api.nvim_get_current_tabpage(),
 		timeout = data.timeLimit,
 		curTest = 1,
 		result = {},
@@ -62,6 +61,7 @@ function M.new(data)
 	if #M.problemList ~= 1 then
 		vim.cmd "$tabnew"
 	end
+	problem.tab_id = vim.api.nvim_get_current_tabpage()
 	vim.t.cp_problem_name = problem_name
 	vim.cmd("tcd " .. problem.path)
 	require("cpeditor.layout").change()
