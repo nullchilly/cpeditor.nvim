@@ -6,7 +6,7 @@
 A plugin written in lua for Competitive Programming based on [cpeditor](https://github.com/cpeditor/cpeditor)
 
 # Preview
-![image](https://user-images.githubusercontent.com/56817415/174640817-7d069ccb-b3cf-4896-8055-95391d045cfe.png)
+![image](https://user-images.githubusercontent.com/56817415/174642705-da06d962-13f4-442b-be54-d48d9666e6b8.png)
 
 # Installation
 
