@@ -7,9 +7,14 @@ local path = require "plenary.path"
 local config = require("cpeditor").config
 
 local function parse_link(url)
+	local res = nil
 	for link, dir in pairs(config.links) do
-		for k, v in (url):gmatch(link) do
-			return { k, v, dir }
+		local match = (url):gmatch(link)
+		for k, v in match do
+			res = { k, v, dir }
+		end
+		if res then -- Avoid luacheck
+			return res
 		end
 	end
 end

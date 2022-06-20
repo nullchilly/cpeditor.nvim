@@ -2,12 +2,12 @@ local uv = vim.loop
 local problem = require "cpeditor.problems"
 
 local buffer = ""
-Server = uv.new_tcp()
-Server:bind("127.0.0.1", 27121)
-Server:listen(128, function(err)
+local server = uv.new_tcp()
+server:bind("127.0.0.1", 27121)
+server:listen(128, function(err)
 	assert(not err, err)
 	local client = uv.new_tcp()
-	Server:accept(client)
+	server:accept(client)
 	client:read_start(function(error, chunk)
 		assert(not error, error)
 		if chunk then
@@ -23,7 +23,7 @@ Server:listen(128, function(err)
 			vim.schedule(function()
 				problem.new(vim.fn.json_decode(buffer))
 			end)
-			Server:shutdown()
+			server:shutdown()
 		end
 	end)
 end)

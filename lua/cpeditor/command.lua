@@ -7,7 +7,9 @@ local function empty() end
 
 local function getTestList()
 	local tests = vim.tbl_keys(problem.current_problem.result)
-	for i, v in ipairs(tests) do tests[i] = tostring(v) end
+	for i, v in ipairs(tests) do
+		tests[i] = tostring(v)
+	end
 	table.insert(tests, "all")
 	return tests
 end
@@ -25,19 +27,19 @@ local commands = {
 			t = tonumber(t)
 			test.switch(t)
 		end,
-		complete = getTestList
+		complete = getTestList,
 	},
 	compile = {
 		run = function()
 			test.compile()
 		end,
-		complete = empty
+		complete = empty,
 	},
 	compile_run = {
 		run = function()
 			test.compile "all"
 		end,
-		complete = empty
+		complete = empty,
 	},
 	run = {
 		run = function(t)
@@ -49,7 +51,7 @@ local commands = {
 			t = tonumber(t)
 			test.run(t)
 		end,
-		complete = getTestList
+		complete = getTestList,
 	},
 }
 

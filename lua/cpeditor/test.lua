@@ -3,7 +3,6 @@ local M = {}
 local path = require "plenary.path"
 local problems = require "cpeditor.problems"
 local layout = require "cpeditor.layout"
-local config = require("cpeditor").config
 
 local function redraw()
 	vim.cmd "redrawtabline"
