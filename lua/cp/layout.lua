@@ -1,11 +1,12 @@
 local config = CpConfig
 
--- neovim 0.8 only
-function CpTab(num, clicks, button, flags)
+-- For neovim >= 0.8
+-- @param: num, clicks, button, flags
+function ___cp_private.tab(num)
 	CpProblem:tab(num)
 end
 
-function CpTest(num, clicks, button, flags)
+function ___cp_private.test(num, _, button)
 	if button == "r" then
 		CpProblem:hide_show(num)
 	else
@@ -13,6 +14,20 @@ function CpTest(num, clicks, button, flags)
 	end
 	CpProblem:test(num)
 end
+
+-- For neovim <= 0.7.1
+vim.cmd [[
+	function ___cp_private_tab(num, clicks, button, flags)
+		execute "lua require'cp.layout'.tab(" . a:num . ")"
+	endfunction
+	function ___cp_private_test(num, clicks, button, flags)
+		if a:button == 'r'
+			execute "lua CpProblem:hide_show(" . a:num . ")"
+		else
+			execute "lua CpProblem:test(" . a:num . ")"
+		endif
+	endfunction
+]]
 
 function CpProblemClass:tabline()
 	local res = ""
@@ -23,7 +38,7 @@ function CpProblemClass:tabline()
 			else
 				res = res .. "%#CpNA#"
 			end
-			res = res .. "%" .. i .. "@CpTab@ " .. v.name .. " "
+			res = res .. "%" .. i .. "@___cp_private_tab@ " .. v.name .. " "
 		end
 		res = res .. "%#CpFL#%T%="
 	end
@@ -37,7 +52,7 @@ function CpProblemClass:tabline()
 			res = res .. "f"
 		end
 		res = res .. v .. "#"
-		res = res .. "%" .. i .. "@CpTest@"
+		res = res .. "%" .. i .. "@___cp_private_test@"
 		res = res .. " " .. i .. " "
 	end
 

@@ -1,4 +1,9 @@
 local M = {}
+local problem = require "cp.problem"
+
+-- @v:lua@ in the tabline only supports global functions, so this is
+-- the only way to add click handlers without autoloaded vimscript functions
+_G.___cp_private = _G.___cp_private or {} -- to guard against reloads
 
 local default_config = {
 	integration = {
@@ -109,19 +114,6 @@ function M.setup(user_config)
 			CpProblem:problem(vim.api.nvim_get_current_tabpage())
 		end,
 	})
-
-	-- Tabline custom support, deprecated by neovim 0.8
-	vim.cmd [[
-		function CpTab(num, clicks, button, flags)
-			execute "lua require'cp.layout'.tab(" . a:num . ")"
-		endfunction
-		function CpTest(num, clicks, button, flags)
-			if a:button == 'r'
-				execute "lua CpProblem:hide_show(" . a:num . ")"
-			else
-				execute "lua CpProblem:test(" . a:num . ")"
-			endif
-		endfunction]]
 end
 
 return M
