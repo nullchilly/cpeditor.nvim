@@ -2,8 +2,8 @@ local M = {}
 
 local default_config = {
 	integration = {
-		bufferline = true,
-		nvim_dap = true,
+		bufferline = false,
+		nvim_dap = false,
 	},
 	links = {
 		["local"] = "~/code/local",
@@ -11,13 +11,18 @@ local default_config = {
 		["https://codeforces.com/problemset/problem/(%d+)/(%w+)"] = "~/code/contest/codeforces",
 	},
 	layouts = {
-		floating = {},
-		default = {
-			cmd = "set nosplitright | vs | setl wfw | wincmd w | bel sp | vs | vs | 1wincmd w",
+		only = {
+			func = function() end,
+			order = { 1, 0, 0, 0, 0 }
+		},
+		split = {
+			func = function()
+				vim.cmd "set nosplitright | vs | setl wfw | wincmd w | bel sp | vs | vs | 1wincmd w"
+			end,
 			order = { 1, 2, 3, 4, 5 }, -- main, errors, input, output, expected output
 		},
 	},
-	default_layout = "default",
+	default_layout = "split",
 	langs = {
 		cpp = {
 			main = { "sol.cpp", "g++ -Wall -O2 -o sol", "./sol" },
@@ -72,6 +77,13 @@ function M.setup(user_config)
 
 	-- change problem on TabEnter
 	vim.api.nvim_create_autocmd("TabEnter", {
+		pattern = "*",
+		callback = function()
+			require("cpeditor.problems").switch(vim.api.nvim_get_current_tabpage())
+		end,
+	})
+
+	vim.api.nvim_create_autocmd("TabClosed", {
 		pattern = "*",
 		callback = function()
 			require("cpeditor.problems").switch(vim.api.nvim_get_current_tabpage())

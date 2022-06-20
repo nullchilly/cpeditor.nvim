@@ -58,10 +58,10 @@ function M.tabline()
 	local ac = 0
 	local tot = 0
 	for i, v in pairs(problem.result) do
-		if v == "WA" then
-			wa = wa + 1
-		elseif v == "AC" then
+		if v == "AC" then
 			ac = ac + 1
+		elseif v ~= "NA" and v ~= "HD" then
+			wa = wa + 1
 		end
 		tot = tot + 1
 		component_test = component_test .. "%#Cpeditor"
@@ -109,14 +109,14 @@ end
 function M.layout()
 	local problem = problems.current_problem
 	M.wincmd("main", "e!" .. problem.lang.main[1])
-	M.wincmd("err", "e! .err | set ft=cpeditor.")
+	M.wincmd("err", "e! .err | set ft=cpp")
 	require("cpeditor.test").switch(problem.curTest)
 end
 
 function M.change(layout)
 	layout = layout or config.default_layout
 	local problem = problems.current_problem
-	vim.cmd(config.layouts[layout].cmd)
+	config.layouts[layout].func()
 	problem.win_id = vim.api.nvim_tabpage_list_wins(0)
 	require("cpeditor.lang").set(config.default_lang)
 	M.layout()
