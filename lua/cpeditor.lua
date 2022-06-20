@@ -86,7 +86,7 @@ function M.setup(user_config)
 	vim.api.nvim_create_autocmd("TabClosed", {
 		pattern = "*",
 		callback = function()
-			require("cpeditor.problems").switch(vim.api.nvim_get_current_tabpage())
+			print(vim.api.nvim_get_current_tabpage())
 		end,
 	})
 end

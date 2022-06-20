@@ -48,7 +48,9 @@ require("cpeditor").setup {
 	layouts = {
 		floating = {},
 		default = {
-			cmd = "set nosplitright | vs | setl wfw | wincmd w | bel sp | vs | vs | 1wincmd w",
+			func = function()
+				vim.cmd "set nosplitright | vs | setl wfw | wincmd w | bel sp | vs | vs | 1wincmd w"
+			end,
 			order = {1, 2, 3, 4, 5}, -- main, errors, input, output, expected output
 		},
 	},
