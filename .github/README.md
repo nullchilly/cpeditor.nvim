@@ -3,7 +3,7 @@
 
 # cp.nvim
 
-A plugin written in lua for Competitive Programming
+A plugin written in lua for Competitive Programming based on [cpeditor](https://github.com/cpeditor/cpeditor]
 
 # Preview
 ![image](https://user-images.githubusercontent.com/56817415/174459273-c9e0fdbc-e06f-4d31-9e18-ab8ecd02e752.png)
@@ -35,7 +35,7 @@ Work in progress
 # Setup
 
 ```lua
-require("cp").setup {
+require("cpeditor").setup {
 	integration = {
 		bufferline = false,
 		nvim_dap = false
@@ -81,7 +81,7 @@ require("bufferline").setup {
 		custom_areas = {
 			right = function()
 				local result = {}
-				table.insert(result, {text = require("cp.layout").tabline()})
+				table.insert(result, {text = require("cpeditor.layout").tabline()})
 				return result
 			end
 		},
@@ -102,4 +102,3 @@ end)
 # Acknowledgement
 - https://github.com/p00f/cphelper.nvim My initial motivation to write this plugin
 - https://github.com/xeluxee/competitest.nvim For great ideas
-- https://github.com/cpeditor/cpeditor/ For not merging vim support

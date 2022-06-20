@@ -97,38 +97,51 @@ function M.run(t)
 	redraw()
 	local timer = 0
 	local tle = nil
-	local job = vim.fn.jobstart(string.format("cd %s && %s < tests/%d/%d.in > tests/%d/%d.out 2> tests/%d/%d.err", problem.problemPath, self.lang[3], t, t, t, t, t, t), {
-		on_exit = function(_, exitCode, _)
-			vim.fn.timer_stop(timer)
-			if t == problem.curTest then
-				M.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
-				M.wincmd("out", "e!")
-			end
-			if exitCode == 0 then
-				vim.fn.jobstart(string.format("diff -qbB tests/%d/%d.out tests/%d/%d.ans", t, t, t, t), {
-					on_exit = function(_, comp, _)
-						if comp == 0 then
-							problem.result[t] = "AC"
-						else
-							problem.result[t] = "WA"
-						end
-						redraw()
-					end,
-				})
-			else
-				if tle then
-					problem.result[t] = "TL"
-				else
-					problem.result[t] = "RE"
-				end
-				redraw()
+	local job = vim.fn.jobstart(
+		string.format(
+			"cd %s && %s < tests/%d/%d.in > tests/%d/%d.out 2> tests/%d/%d.err",
+			problem.problemPath,
+			self.lang[3],
+			t,
+			t,
+			t,
+			t,
+			t,
+			t
+		),
+		{
+			on_exit = function(_, exitCode, _)
+				vim.fn.timer_stop(timer)
 				if t == problem.curTest then
 					M.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
+					M.wincmd("out", "e!")
 				end
-				M.wincmd("out", "e")
-			end
-		end,
-	})
+				if exitCode == 0 then
+					vim.fn.jobstart(string.format("diff -qbB tests/%d/%d.out tests/%d/%d.ans", t, t, t, t), {
+						on_exit = function(_, comp, _)
+							if comp == 0 then
+								problem.result[t] = "AC"
+							else
+								problem.result[t] = "WA"
+							end
+							redraw()
+						end,
+					})
+				else
+					if tle then
+						problem.result[t] = "TL"
+					else
+						problem.result[t] = "RE"
+					end
+					redraw()
+					if t == problem.curTest then
+						M.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
+					end
+					M.wincmd("out", "e")
+				end
+			end,
+		}
+	)
 	timer = vim.fn.timer_start(problem.timeout, function()
 		vim.fn.jobstop(job)
 		tle = 1

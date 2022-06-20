@@ -1,0 +1,37 @@
+---
+name: Run tests
+on:
+  pull_request: ~
+  push:
+    paths-ignore:
+      - ".github/**"
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get neovim v0.7.0
+        uses: actions/cache@v2
+        with:
+          path: build/neovim/v0.7.0
+          key: ${{ runner.os }}-appimage-0.7.0
+
+      - name: Fetch dependencies
+        run: |
+          git clone --depth 1 https://github.com/nvim-lua/plenary.nvim ~/.local/share/nvim/site/pack/vendor/start/plenary.nvim
+          git clone --depth 1 https://github.com/kyazdani42/nvim-web-devicons ~/.local/share/nvim/site/pack/vendor/start/nvim-web-devicons
+          ln -s $(pwd) ~/.local/share/nvim/site/pack/vendor/start
+      - name: Run tests
+        run: |
+          test -d build/neovim/v0.7.0 || {
+            mkdir -p build/neovim/v0.7.0
+            curl -Lo build/neovim/v0.7.0/nvim https://github.com/neovim/neovim/releases/download/v0.7.0/nvim.appimage
+            chmod +x build/neovim/v0.7.0/nvim
+          }
+          build/neovim/v0.7.0/nvim --headless --noplugin -nu tests/minimal.lua # TODO: add plenary tests
