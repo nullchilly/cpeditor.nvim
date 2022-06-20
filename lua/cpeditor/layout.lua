@@ -24,13 +24,13 @@ end
 -- For neovim <= 0.7.1
 vim.cmd [[
 	function ___cpeditor_private_tab(num, clicks, button, flags)
-		execute "lua require'cpeditor.layout'.tab(" . a:num . ")"
+		execute "lua require'cpeditor.problem'.switch(" . a:num . ")"
 	endfunction
 	function ___cpeditor_private_test(num, clicks, button, flags)
 		if a:button == 'r'
-			execute "lua require'cpeditor.layout'.toggle(" . a:num . ")"
+			execute "lua require'cpeditor.test'.toggle(" . a:num . ")"
 		else
-			execute "lua require'cpeditor.layout'.test(" . a:num . ")"
+			execute "lua require'cpeditor.test'.switch(" . a:num . ")"
 		endif
 	endfunction
 ]]
@@ -91,9 +91,10 @@ function M.layout()
 	require("cpeditor.test").switch(problem.curTest)
 end
 
-function M.open()
+function M.change(layout)
+	layout = layout or config.default_layout
 	local problem = problems.current_problem
-	vim.cmd(config.layouts[config.default_layout].cmd)
+	vim.cmd(config.layouts[layout].cmd)
 	problem.win_id = vim.api.nvim_tabpage_list_wins(0)
 	require("cpeditor.lang").set(config.default_lang)
 	M.layout()

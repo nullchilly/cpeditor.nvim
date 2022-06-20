@@ -86,7 +86,7 @@ end
 function M.run(t)
 	local problem = problems.current_problem
 	if t then
-		M.wincmd("inp", "w")
+		layout.wincmd("inp", "w")
 	else
 		t = problem.curTest
 		for i, _ in pairs(problem.result) do
@@ -100,8 +100,8 @@ function M.run(t)
 	local job = vim.fn.jobstart(
 		string.format(
 			"cd %s && %s < tests/%d/%d.in > tests/%d/%d.out 2> tests/%d/%d.err",
-			problem.problemPath,
-			self.lang[3],
+			problem.path,
+			problem.lang.main[3],
 			t,
 			t,
 			t,
@@ -113,8 +113,8 @@ function M.run(t)
 			on_exit = function(_, exitCode, _)
 				vim.fn.timer_stop(timer)
 				if t == problem.curTest then
-					M.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
-					M.wincmd("out", "e!")
+					layout.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
+					layout.wincmd("out", "e!")
 				end
 				if exitCode == 0 then
 					vim.fn.jobstart(string.format("diff -qbB tests/%d/%d.out tests/%d/%d.ans", t, t, t, t), {
@@ -135,9 +135,9 @@ function M.run(t)
 					end
 					redraw()
 					if t == problem.curTest then
-						M.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
+						layout.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
 					end
-					M.wincmd("out", "e")
+					layout.wincmd("out", "e")
 				end
 			end,
 		}
@@ -148,20 +148,29 @@ function M.run(t)
 	end)
 end
 
+function M.run_all()
+	local problem = problems.current_problem
+	for i, _ in pairs(problem.result) do
+		if problem.result[i] ~= "HD" then
+			M.run(i)
+		end
+	end
+end
+
 function M.compile(all)
 	local problem = problems.current_problem
 	if all then
 		vim.cmd "wa"
 	else
-		M.wincmd("main", "w")
+		layout.wincmd("main", "w")
 	end
 	io.open(string.format("%s/.err", problem.path), "w"):close()
 	local f = io.open(string.format("%s/.err", problem.path), "a")
 	-- TODO: change to buffer attach
 	f:write "[Compiling...]\n"
 	f:flush()
-	M.wincmd("err", "e .err")
-	vim.fn.jobstart(problem.lang[2] .. " " .. self.lang[1], {
+	layout.wincmd("err", "e .err")
+	vim.fn.jobstart(problem.lang.main[2] .. " " .. problem.lang.main[1], {
 		on_stderr = function(_, data, _)
 			for _, d in ipairs(data) do
 				f:write(d .. "\n")
@@ -171,17 +180,13 @@ function M.compile(all)
 			if exitCode == 0 then
 				f:write "[Compiled]"
 				if all then
-					for i, _ in pairs(problem.result) do
-						if problem.result[i] ~= "HD" then
-							M.run(i)
-						end
-					end
+					M.run_all()
 				end
 			else
 				f:write "[Compile Error]"
 			end
 			f:close()
-			M.wincmd("err", "e! .err")
+			layout.wincmd("err", "e! .err")
 		end,
 	})
 end

@@ -55,37 +55,8 @@ end
 function M.setup(user_config)
 	M.config = vim.tbl_deep_extend("force", user_config, default_config)
 
-	local load_command = function(cmd, ...)
-		local args = { ... }
-		require("cpeditor.command")[cmd].run(args)
-	end
-	vim.api.nvim_create_user_command("Cpeditor", function(info)
-		load_command(unpack(info.fargs))
-	end, {
-		nargs = "*",
-		complete = function(_, line)
-			local commands = require "cpeditor.command"
-			local builtin_list = vim.tbl_keys(commands)
-
-			local l = vim.split(line, "%s+")
-			local n = #l - 2
-
-			if n == 0 then
-				return vim.tbl_filter(function(val)
-					return vim.startswith(val, l[2])
-				end, builtin_list)
-			end
-
-			if n == 1 then
-				local extension = commands[l[2]]
-				if extension then
-					return vim.tbl_filter(function(val)
-						return vim.startswith(val, l[3])
-					end, extension.complete())
-				end
-			end
-		end,
-	})
+	-- create commands
+	require("cpeditor.command").load()
 
 	-- create highlight groups
 	M.highlight()
@@ -97,7 +68,7 @@ function M.setup(user_config)
 		end,
 	})
 
-	-- Change problem autocmd
+	-- change problem on TabEnter
 	vim.api.nvim_create_autocmd("TabEnter", {
 		pattern = "*",
 		callback = function()

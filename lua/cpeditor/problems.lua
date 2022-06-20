@@ -59,7 +59,7 @@ function M.new(data)
 	end
 	vim.t.cp_problem_name = problem_name
 	vim.cmd("tcd " .. problem.path)
-	require("cpeditor.layout").open()
+	require("cpeditor.layout").change()
 end
 
 return M
