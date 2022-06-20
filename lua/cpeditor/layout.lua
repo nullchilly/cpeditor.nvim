@@ -1,36 +1,36 @@
 local M = {}
 
-local config = require("cp").config
-local problems = require "cp.problems"
+local config = require("cpeditor").config
+local problems = require "cpeditor.problems"
 
 -- @v:lua@ in the tabline only supports global functions, so this is
 -- the only way to add click handlers without autoloaded vimscript functions
-_G.___cp_private = _G.___cp_private or {} -- to guard against reloads
+_G.___cpeditor_private = _G.___cpeditor_private or {} -- to guard against reloads
 
 -- For neovim >= 0.8
 -- @param: num, clicks, button, flags
-function ___cp_private.tab(num)
-	require("cp.test").tab(num)
+function ___cpeditor_private.tab(num)
+	require("cpeditor.test").tab(num)
 end
 
-function ___cp_private.test(num, _, button)
+function ___cpeditor_private.test(num, _, button)
 	if button == "r" then
-		require("cp.test").toggle(num)
+		require("cpeditor.test").toggle(num)
 	else
-		require("cp.test").switch(num)
+		require("cpeditor.test").switch(num)
 	end
 end
 
 -- For neovim <= 0.7.1
 vim.cmd [[
-	function ___cp_private_tab(num, clicks, button, flags)
-		execute "lua require'cp.layout'.tab(" . a:num . ")"
+	function ___cpeditor_private_tab(num, clicks, button, flags)
+		execute "lua require'cpeditor.layout'.tab(" . a:num . ")"
 	endfunction
-	function ___cp_private_test(num, clicks, button, flags)
+	function ___cpeditor_private_test(num, clicks, button, flags)
 		if a:button == 'r'
-			execute "lua require'cp.layout'.toggle(" . a:num . ")"
+			execute "lua require'cpeditor.layout'.toggle(" . a:num . ")"
 		else
-			execute "lua require'cp.layout'.test(" . a:num . ")"
+			execute "lua require'cpeditor.layout'.test(" . a:num . ")"
 		endif
 	endfunction
 ]]
@@ -40,24 +40,24 @@ function M.tabline(problem, problemList)
 	if config.bufferline_integration == false then
 		for i, v in ipairs(problemList) do
 			if vim.api.nvim_get_current_tabpage() == v.tab_id then
-				res = res .. "%#CpfNA#"
+				res = res .. "%#CpeditorNA#"
 			else
-				res = res .. "%#CpNA#"
+				res = res .. "%#CpeditorNA#"
 			end
-			res = res .. "%" .. i .. "@___cp_private_" .. "tab@ " .. v.name .. " "
+			res = res .. "%" .. i .. "@___cpeditor_private_" .. "tab@ " .. v.name .. " "
 		end
-		res = res .. "%#CpFL#%T%="
+		res = res .. "%#CpeditorFL#%T%="
 	end
 	if problem.result == nil then
 		return
 	end
 	for i, v in pairs(problem.result) do
-		res = res .. "%#Cp"
+		res = res .. "%#Cpeditor"
 		if i == problem.curTest then
 			res = res .. "f"
 		end
 		res = res .. v .. "#"
-		res = res .. "%" .. i .. "@___cp_private_" .. "test@"
+		res = res .. "%" .. i .. "@___cpeditor_private_" .. "test@"
 		res = res .. " " .. i .. " "
 	end
 
@@ -85,9 +85,9 @@ end
 function M.layout()
 	local problem = problems.current_problem
 	-- M.wincmd("main", "e!" .. problem.lang.main[1])
-	M.wincmd("err", "e! .err | set ft=cpp")
+	M.wincmd("err", "e! .err | set ft=cpeditor.")
 	vim.pretty_print(problem)
-	require("cp.test").switch(problem.curTest)
+	require("cpeditor.test").switch(problem.curTest)
 end
 
 function M.open()

@@ -1,5 +1,5 @@
 local uv = vim.loop
-local problem = require "cp.problems"
+local problem = require "cpeditor.problems"
 
 local buffer = ""
 Server = uv.new_tcp()

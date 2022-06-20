@@ -4,7 +4,7 @@ local M = {
 }
 
 local path = require "plenary.path"
-local config = require("cp").config
+local config = require("cpeditor").config
 
 local function parse_link(url)
 	for link, dir in pairs(config.links) do
@@ -54,7 +54,7 @@ function M.new(data)
 	end
 	vim.t.cp_problem_name = problem_name
 	vim.cmd("tcd " .. problem.path)
-	require("cp.layout").open()
+	require("cpeditor.layout").open()
 end
 
 return M

@@ -29,23 +29,23 @@ local default_config = {
 }
 
 function M.highlight()
-	-- Create Cp highlight groups
+	-- Create cpeditor highlight groups
 	local highlight_groups = {
-		CpHD = { fg = "#ffffff", bg = "#000000" },
-		CpfHD = { fg = "#000000", bg = "#ffffff" },
-		CpNA = { fg = "#ffffff", bg = "#ABB2BF" },
-		CpfNA = { fg = "#000000", bg = "#ABB2BF" },
-		CpPD = { fg = "#C678DD", bg = "#ffffff" },
-		CpfPD = { fg = "#000000", bg = "#ABB2BF" },
-		CpAC = { fg = "#ffffff", bg = "#98C379" },
-		CpfAC = { fg = "#000000", bg = "#98C379" },
-		CpWA = { fg = "#ffffff", bg = "#E06C75" },
-		CpfWA = { fg = "#000000", bg = "#E06C75" },
-		CpRE = { fg = "#ffffff", bg = "#61AFEF" },
-		CpfRE = { fg = "#000000", bg = "#61AFEF" },
-		CpTL = { fg = "#ffffff", bg = "#E5C07B" },
-		CpfTL = { fg = "#000000", bg = "#E5C07B" },
-		CpFL = { fg = "#000000", bg = "NONE" },
+		CpeditorHD = { fg = "#ffffff", bg = "#000000" },
+		CpeditorfHD = { fg = "#000000", bg = "#ffffff" },
+		CpeditorNA = { fg = "#ffffff", bg = "#ABB2BF" },
+		CpeditorfNA = { fg = "#000000", bg = "#ABB2BF" },
+		CpeditorPD = { fg = "#C678DD", bg = "#ffffff" },
+		CpeditorfPD = { fg = "#000000", bg = "#ABB2BF" },
+		CpeditorAC = { fg = "#ffffff", bg = "#98C379" },
+		CpeditorfAC = { fg = "#000000", bg = "#98C379" },
+		CpeditorWA = { fg = "#ffffff", bg = "#E06C75" },
+		CpeditorfWA = { fg = "#000000", bg = "#E06C75" },
+		CpeditorRE = { fg = "#ffffff", bg = "#61AFEF" },
+		CpeditorfRE = { fg = "#000000", bg = "#61AFEF" },
+		CpeditorTL = { fg = "#ffffff", bg = "#E5C07B" },
+		CpeditorfTL = { fg = "#000000", bg = "#E5C07B" },
+		CpeditorFL = { fg = "#000000", bg = "NONE" },
 	}
 	for name, val in pairs(highlight_groups) do
 		vim.api.nvim_set_hl(0, name, val)
@@ -57,14 +57,14 @@ function M.setup(user_config)
 
 	local load_command = function(cmd, ...)
 		local args = { ... }
-		require("cp.command")[cmd].run(args)
+		require("cpeditor.command")[cmd].run(args)
 	end
-	vim.api.nvim_create_user_command("Cp", function(info)
+	vim.api.nvim_create_user_command("Cpeditor", function(info)
 		load_command(unpack(info.fargs))
 	end, {
 		nargs = "*",
 		complete = function(_, line)
-			local commands = require "cp.command"
+			local commands = require "cpeditor.command"
 			local builtin_list = vim.tbl_keys(commands)
 
 			local l = vim.split(line, "%s+")
@@ -93,7 +93,7 @@ function M.setup(user_config)
 	vim.api.nvim_create_autocmd("ColorScheme", {
 		pattern = "*",
 		callback = function()
-			require("cp").highlight()
+			require("cpeditor").highlight()
 		end,
 	})
 
@@ -101,7 +101,7 @@ function M.setup(user_config)
 	vim.api.nvim_create_autocmd("TabEnter", {
 		pattern = "*",
 		callback = function()
-			require("cp.problems").switch(vim.api.nvim_get_current_tabpage())
+			require("cpeditor.problems").switch(vim.api.nvim_get_current_tabpage())
 		end,
 	})
 end

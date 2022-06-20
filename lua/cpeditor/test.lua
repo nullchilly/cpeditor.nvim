@@ -1,9 +1,9 @@
 local M = {}
 
 local path = require "plenary.path"
-local problems = require "cp.problems"
-local layout = require "cp.layout"
-local config = require("cp").config
+local problems = require "cpeditor.problems"
+local layout = require "cpeditor.layout"
+local config = require("cpeditor").config
 
 local function redraw()
 	vim.cmd "redrawtabline"

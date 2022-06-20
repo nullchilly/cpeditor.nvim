@@ -1,5 +1,5 @@
 local M = {}
-local config = require("cp").config
+local config = require("cpeditor").config
 
 function M.sol(L)
 	problem.lang = config.langs[L]

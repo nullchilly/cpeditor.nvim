@@ -1,10 +1,10 @@
-local problem = require "cp.problems"
-local test = require "cp.test"
+local problem = require "cpeditor.problems"
+local test = require "cpeditor.test"
 
 return {
 	receive = {
 		run = function()
-			require "cp.receive"
+			require "cpeditor.receive"
 		end,
 		complete = function() end,
 	},

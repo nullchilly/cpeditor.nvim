@@ -12,7 +12,7 @@ A plugin written in lua for Competitive Programming
 
 ```lua
 use {
-	'nullchilly/cp.nvim',
+	'nullchilly/cpeditor.nvim',
 	requires = 'nvim-lua/plenary.nvim'
 }
 ```
