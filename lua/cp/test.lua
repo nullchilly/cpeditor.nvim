@@ -1,141 +1,154 @@
+local M = {}
+
 local path = require "plenary.path"
-local config = CpConfig
+local problems = require("cp.problems")
+local layout = require("cp.layout")
+local config = require("cp").config
 
 local function redraw()
 	vim.cmd "redrawtabline"
 end
 
-function CpProblemClass:test(t)
-	if not self.result[t] then
+function M.switch(t)
+	local problem = problems.current_problem
+	if not problem.result[t] then
 		return
 	end
-	self:wincmd("err", string.format("e! tests/%d/%d.err", t, t))
-	self:wincmd("inp", string.format("e! tests/%d/%d.in", t, t))
-	self:wincmd("out", string.format("e! tests/%d/%d.out", t, t))
-	self:wincmd("ans", string.format("e! tests/%d/%d.ans", t, t))
-	self.curTest = t
+	layout.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
+	layout.wincmd("inp", string.format("e! tests/%d/%d.in", t, t))
+	layout.wincmd("out", string.format("e! tests/%d/%d.out", t, t))
+	layout.wincmd("ans", string.format("e! tests/%d/%d.ans", t, t))
+	problem.curTest = t
 end
 
-function CpProblemClass:insert(t)
-	self.result[t] = "NA"
-	path:new(self.path):joinpath(t):mkdir { exists_ok = true }
-	CpProblemClass:test(t)
+function M.insert(t)
+	local problem = problems.current_problem
+	problem.result[t] = "NA"
+	path:new(problem.path):joinpath(t):mkdir { exists_ok = true }
+	M.switch(t)
 end
 
-function CpProblemClass:erase(t)
+function M.erase(t)
+		local problem = problems.current_problem
 	if not t then
-		t = self.curTest
+		t = problem.curTest
 	end
-	path:new(self.path):joinpath(t):rm()
-	self.result[t] = nil
+	path:new(problem.path):joinpath(t):rm()
+	problem.result[t] = nil
 	redraw()
 end
 
-function CpProblemClass:hide_show(t)
+function M.toggle(t)
+		local problem = problems.current_problem
 	if not t then
-		t = self.curTest
+		t = problem.curTest
 	end
-	if self.result[t] == "HD" then
-		self.result[t] = "NA"
+	if problem.result[t] == "HD" then
+		problem.result[t] = "NA"
 	else
-		self.result[t] = "HD"
+		problem.result[t] = "HD"
 	end
 	redraw()
 end
 
-function CpProblemClass:show_all()
-	for t, _ in pairs(self.result) do
-		if self.result[t] == "HD" then
-			self.result[t] = "NA"
+function M.show_all()
+		local problem = problems.current_problem
+	for t, _ in pairs(problem.result) do
+		if problem.result[t] == "HD" then
+			problem.result[t] = "NA"
 		end
 	end
 	redraw()
 end
 
-function CpProblemClass:invert()
-	for t, _ in pairs(self.result) do
-		if self.result[t] == "HD" then
-			self.result[t] = "NA"
+function M.invert()
+		local problem = problems.current_problem
+	for t, _ in pairs(problem.result) do
+		if problem.result[t] == "HD" then
+			problem.result[t] = "NA"
 		else
-			self.result[t] = "HD"
+			problem.result[t] = "HD"
 		end
 	end
 	redraw()
 end
 
-function CpProblemClass:hide(stat)
-	for t, v in pairs(self.result) do
+function M.hide(stat)
+		local problem = problems.current_problem
+	for t, v in pairs(problem.result) do
 		if v == stat then
-			self.result[t] = "HD"
+			problem.result[t] = "HD"
 		end
 	end
 	redraw()
 end
 
-function CpProblemClass:run(t)
+function M.run(t)
+		local problem = problems.current_problem
 	if t then
-		self:wincmd("inp", "w")
+		M.wincmd("inp", "w")
 	else
-		t = self.curTest
-		for i, _ in pairs(self.result) do
-			self.result[i] = "PD"
+		t = problem.curTest
+		for i, _ in pairs(problem.result) do
+			problem.result[i] = "PD"
 		end
 	end
-	self.result[t] = "PD"
+	problem.result[t] = "PD"
 	redraw()
 	local timer = 0
 	local tle = nil
-	local job = vim.fn.jobstart(string.format("cd %s && %s < tests/%d/%d.in > tests/%d/%d.out 2> tests/%d/%d.err", self.problemPath, self.lang[3], t, t, t, t, t, t), {
+	local job = vim.fn.jobstart(string.format("cd %s && %s < tests/%d/%d.in > tests/%d/%d.out 2> tests/%d/%d.err", problem.problemPath, self.lang[3], t, t, t, t, t, t), {
 		on_exit = function(_, exitCode, _)
 			vim.fn.timer_stop(timer)
-			if t == self.curTest then
-				self:wincmd("err", string.format("e! tests/%d/%d.err", t, t))
-				self:wincmd("out", "e!")
+			if t == problem.curTest then
+				M.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
+				M.wincmd("out", "e!")
 			end
 			if exitCode == 0 then
 				vim.fn.jobstart(string.format("diff -qbB tests/%d/%d.out tests/%d/%d.ans", t, t, t, t), {
 					on_exit = function(_, comp, _)
 						if comp == 0 then
-							self.result[t] = "AC"
+							problem.result[t] = "AC"
 						else
-							self.result[t] = "WA"
+							problem.result[t] = "WA"
 						end
 						redraw()
 					end,
 				})
 			else
 				if tle then
-					self.result[t] = "TL"
+					problem.result[t] = "TL"
 				else
-					self.result[t] = "RE"
+					problem.result[t] = "RE"
 				end
 				redraw()
-				if t == self.curTest then
-					self:wincmd("err", string.format("e! tests/%d/%d.err", t, t))
+				if t == problem.curTest then
+					M.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
 				end
-				self:wincmd("out", "e")
+				M.wincmd("out", "e")
 			end
 		end,
 	})
-	timer = vim.fn.timer_start(self.timeout, function()
+	timer = vim.fn.timer_start(problem.timeout, function()
 		vim.fn.jobstop(job)
 		tle = 1
 	end)
 end
 
-function CpProblemClass:compile(all)
+function M.compile(all)
+	local problem = problems.current_problem
 	if all then
 		vim.cmd "wa"
 	else
-		self:wincmd("main", "w")
+		M.wincmd("main", "w")
 	end
-	io.open(string.format("%s/.err", self.path), "w"):close()
-	local f = io.open(string.format("%s/.err", self.path), "a")
+	io.open(string.format("%s/.err", problem.path), "w"):close()
+	local f = io.open(string.format("%s/.err", problem.path), "a")
 	-- TODO: change to buffer attach
 	f:write "[Compiling...]\n"
 	f:flush()
-	self:wincmd("err", "e .err")
-	vim.fn.jobstart(self.lang[2] .. " " .. self.lang[1], {
+	M.wincmd("err", "e .err")
+	vim.fn.jobstart(problem.lang[2] .. " " .. self.lang[1], {
 		on_stderr = function(_, data, _)
 			for _, d in ipairs(data) do
 				f:write(d .. "\n")
@@ -145,9 +158,9 @@ function CpProblemClass:compile(all)
 			if exitCode == 0 then
 				f:write "[Compiled]"
 				if all then
-					for i, _ in pairs(self.result) do
-						if self.result[i] ~= "HD" then
-							self:run(i)
+					for i, _ in pairs(problem.result) do
+						if problem.result[i] ~= "HD" then
+							M.run(i)
 						end
 					end
 				end
@@ -155,7 +168,9 @@ function CpProblemClass:compile(all)
 				f:write "[Compile Error]"
 			end
 			f:close()
-			self:wincmd("err", "e! .err")
+			M.wincmd("err", "e! .err")
 		end,
 	})
 end
+
+return M

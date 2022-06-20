@@ -81,7 +81,7 @@ require("bufferline").setup {
 		custom_areas = {
 			right = function()
 				local result = {}
-				table.insert(result, {text = CpProblem:tabline()})
+				table.insert(result, {text = require("cp.layout").tabline()})
 				return result
 			end
 		},

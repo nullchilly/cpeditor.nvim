@@ -1,9 +1,4 @@
 local M = {}
-local problem = require "cp.problem"
-
--- @v:lua@ in the tabline only supports global functions, so this is
--- the only way to add click handlers without autoloaded vimscript functions
-_G.___cp_private = _G.___cp_private or {} -- to guard against reloads
 
 local default_config = {
 	integration = {
@@ -58,13 +53,7 @@ function M.highlight()
 end
 
 function M.setup(user_config)
-	CpConfig = vim.tbl_deep_extend("force", user_config, default_config)
-	CpProblemClass = {}
-	CpProblemList = {}
-	CpProblem = {}
-	require "cp.problem"
-	require "cp.test"
-	require "cp.layout"
+	M.config = vim.tbl_deep_extend("force", user_config, default_config)
 
 	local load_command = function(cmd, ...)
 		local args = { ... }
@@ -108,10 +97,11 @@ function M.setup(user_config)
 		end,
 	})
 
+	-- Change problem autocmd
 	vim.api.nvim_create_autocmd("TabEnter", {
 		pattern = "*",
 		callback = function()
-			CpProblem:problem(vim.api.nvim_get_current_tabpage())
+			require("cp.problems").switch(vim.api.nvim_get_current_tabpage())
 		end,
 	})
 end

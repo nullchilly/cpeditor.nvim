@@ -1,4 +1,5 @@
 local uv = vim.loop
+local problem = require "cp.problems"
 
 local buffer = ""
 Server = uv.new_tcp()
@@ -20,7 +21,7 @@ Server:listen(128, function(err)
 			end
 			buffer = lines[#lines]
 			vim.schedule(function()
-				CpProblemClass:new(vim.fn.json_decode(buffer))
+				problem.new(vim.fn.json_decode(buffer))
 			end)
 			Server:shutdown()
 		end
