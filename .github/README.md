@@ -74,7 +74,7 @@ require("bufferline").setup {
 	options = {
 		mode = "tabs",
 		name_formatter = function(tab)
-			local error, problem_name = pcall(function() return vim.api.nvim_tabpage_get_var(tab.tabnr, "cp_problem_name") end)
+			local error, problem_name = pcall(function() return vim.api.nvim_tabpage_get_var(tab.tabnr, "cpeditor_problem_name") end)
 			if error == false then
 				return tab.name
 			end

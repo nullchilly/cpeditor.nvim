@@ -36,17 +36,19 @@ vim.cmd [[
 ]]
 
 function M.tabline()
-	local problem = problems.current_problem
-	local problemList = problems.problemList
+	local problem = problems.current
+	if problem == nil then
+		return ""
+	end
 	local component_problem = ""
-	if config.bufferline_integration == false then
-		for i, v in ipairs(problemList) do
-			if vim.api.nvim_get_current_tabpage() == v.tab_id then
-				component_problem = component_problem .. "%#CpeditorNA#"
+	if config.integration.bufferline == false then
+		for i, p in ipairs(problems.list) do
+			if vim.api.nvim_get_current_tabpage() == p.tab_id then
+				component_problem = component_problem .. "%#CpeditorfNA#"
 			else
 				component_problem = component_problem .. "%#CpeditorNA#"
 			end
-			component_problem = component_problem .. "%" .. i .. "@___cpeditor_private_" .. "tab@ " .. v.name .. " "
+			component_problem = component_problem .. "%" .. i .. "@___cpeditor_private_" .. "tab@ " .. p.name .. " "
 		end
 		component_problem = component_problem .. "%#CpeditorFL#%T%="
 	end
@@ -89,7 +91,7 @@ function M.tabline()
 end
 
 function M.wincmd(type, cmd)
-	local problem = problems.current_problem
+	local problem = problems.current
 	local convert = {
 		main = problem.win_id[1],
 		err = problem.win_id[2],
@@ -106,20 +108,13 @@ function M.wincmd(type, cmd)
 	end)
 end
 
-function M.layout()
-	local problem = problems.current_problem
-	M.wincmd("main", "e!" .. problem.lang.main[1])
-	M.wincmd("err", "e! .err | set ft=cpp")
-	require("cpeditor.test").switch(problem.curTest)
-end
-
 function M.change(layout)
-	layout = layout or config.default_layout
-	local problem = problems.current_problem
+	layout = layout or config.layout
+	local problem = problems.current
 	config.layouts[layout].func()
 	problem.win_id = vim.api.nvim_tabpage_list_wins(0)
-	require("cpeditor.lang").set(config.default_lang)
-	M.layout()
+	require("cpeditor.test").switch(problem.curTest)
+	require("cpeditor.lang").set(config.lang)
 end
 
 return M

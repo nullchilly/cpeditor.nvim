@@ -6,7 +6,7 @@ local test = require "cpeditor.test"
 local function empty() end
 
 local function getTestList()
-	local tests = vim.tbl_keys(problem.current_problem.result)
+	local tests = vim.tbl_keys(problem.current.result)
 	for i, v in ipairs(tests) do
 		tests[i] = tostring(v)
 	end
@@ -16,16 +16,16 @@ end
 
 local commands = {
 	receive = {
-		run = function()
-			require("cpeditor.receive").start()
+		run = function(args)
+			require("cpeditor.receive").start(args)
 		end,
-		complete = function() end,
+		complete = empty
 	},
 	stop = {
 		run = function()
 			require("cpeditor.receive").stop()
 		end,
-		complete = function() end,
+		complete = empty
 	},
 	test = {
 		run = function(t)
@@ -72,7 +72,6 @@ function M.load()
 	end, {
 		nargs = "*",
 		complete = function(_, line)
-			-- local commands = require "cpeditor.command"
 			local builtin_list = vim.tbl_keys(commands)
 
 			local l = vim.split(line, "%s+")

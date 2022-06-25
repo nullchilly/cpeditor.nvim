@@ -2,33 +2,35 @@ local M = {}
 
 local path = require "plenary.path"
 local problems = require "cpeditor.problems"
+local config = require "cpeditor".config
 local layout = require "cpeditor.layout"
+local utils = require "cpeditor.utils"
 
 local function redraw()
 	vim.cmd "redrawtabline"
 end
 
 function M.switch(t)
-	local problem = problems.current_problem
+	local problem = problems.current
 	if not problem.result[t] then
 		return
 	end
-	layout.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
-	layout.wincmd("inp", string.format("e! tests/%d/%d.in", t, t))
-	layout.wincmd("out", string.format("e! tests/%d/%d.out", t, t))
-	layout.wincmd("ans", string.format("e! tests/%d/%d.ans", t, t))
+	layout.wincmd("err", "e! " .. utils.inter(config.tests_format.stderr, {tcnum = t}))
+	layout.wincmd("inp", "e! " .. utils.inter(config.tests_format.input, {tcnum = t}))
+	layout.wincmd("out", "e! " .. utils.inter(config.tests_format.output, {tcnum = t}))
+	layout.wincmd("ans", "e! " .. utils.inter(config.tests_format.answer, {tcnum = t}))
 	problem.curTest = t
 end
 
 function M.insert(t)
-	local problem = problems.current_problem
+	local problem = problems.current
 	problem.result[t] = "NA"
 	path:new(problem.path):joinpath(t):mkdir { exists_ok = true }
 	M.switch(t)
 end
 
 function M.erase(t)
-	local problem = problems.current_problem
+	local problem = problems.current
 	if not t then
 		t = problem.curTest
 	end
@@ -38,7 +40,7 @@ function M.erase(t)
 end
 
 function M.toggle(t)
-	local problem = problems.current_problem
+	local problem = problems.current
 	if not t then
 		t = problem.curTest
 	end
@@ -51,7 +53,7 @@ function M.toggle(t)
 end
 
 function M.show_all()
-	local problem = problems.current_problem
+	local problem = problems.current
 	for t, _ in pairs(problem.result) do
 		if problem.result[t] == "HD" then
 			problem.result[t] = "NA"
@@ -61,7 +63,7 @@ function M.show_all()
 end
 
 function M.invert()
-	local problem = problems.current_problem
+	local problem = problems.current
 	for t, _ in pairs(problem.result) do
 		if problem.result[t] == "HD" then
 			problem.result[t] = "NA"
@@ -73,7 +75,7 @@ function M.invert()
 end
 
 function M.hide(stat)
-	local problem = problems.current_problem
+	local problem = problems.current
 	for t, v in pairs(problem.result) do
 		if v == stat then
 			problem.result[t] = "HD"
@@ -83,7 +85,7 @@ function M.hide(stat)
 end
 
 function M.run(t)
-	local problem = problems.current_problem
+	local problem = problems.current
 	if t then
 		layout.wincmd("inp", "w")
 	else
@@ -96,18 +98,8 @@ function M.run(t)
 	redraw()
 	local timer = 0
 	local tle = nil
-	local job = vim.fn.jobstart(
-		string.format(
-			"cd %s && %s < tests/%d/%d.in > tests/%d/%d.out 2> tests/%d/%d.err",
-			problem.path,
-			problem.lang.main[3],
-			t,
-			t,
-			t,
-			t,
-			t,
-			t
-		),
+	local run_command = utils.inter(problem.lang.sources[problem.lang.source].run, {tcnum = t})
+	local job = vim.fn.jobstart(run_command ,
 		{
 			on_exit = function(_, exitCode, _)
 				vim.fn.timer_stop(timer)
@@ -148,7 +140,7 @@ function M.run(t)
 end
 
 function M.run_all()
-	local problem = problems.current_problem
+	local problem = problems.current
 	for i, _ in pairs(problem.result) do
 		if problem.result[i] ~= "HD" then
 			M.run(i)
@@ -157,7 +149,7 @@ function M.run_all()
 end
 
 function M.compile(all)
-	local problem = problems.current_problem
+	local problem = problems.current
 	if all then
 		vim.cmd "wa"
 	else
@@ -168,7 +160,9 @@ function M.compile(all)
 	-- TODO: change to buffer attach
 	problem.status = "Compiling"
 	layout.wincmd("err", "e .err")
-	vim.fn.jobstart(problem.lang.main[2] .. " " .. problem.lang.main[1], {
+	local compile_command = utils.inter(problem.lang.sources[problem.lang.source].compile, {flag = problem.lang.flags[problem.lang.flag]})
+	print(compile_command)
+	vim.fn.jobstart(compile_command, {
 		on_stderr = function(_, data, _)
 			for _, d in ipairs(data) do
 				f:write(d .. "\n")
