@@ -99,15 +99,19 @@ function M.run(t)
 	local timer = 0
 	local tle = nil
 	local run_command = utils.inter(problem.lang.sources[problem.lang.source].run, { tcnum = t })
+	local stderr = utils.inter(config.tests_format.stderr, { tcnum = t })
+	local input = utils.inter(config.tests_format.input, { tcnum = t })
+	local output = utils.inter(config.tests_format.output, { tcnum = t })
+	local answer = utils.inter(config.tests_format.answer, { tcnum = t })
 	local job = vim.fn.jobstart(run_command, {
 		on_exit = function(_, exitCode, _)
 			vim.fn.timer_stop(timer)
 			if t == problem.curTest then
-				layout.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
+				layout.wincmd("err", "e! " .. stderr)
 				layout.wincmd("out", "e!")
 			end
 			if exitCode == 0 then
-				vim.fn.jobstart(string.format("diff -qbB tests/%d/%d.out tests/%d/%d.ans", t, t, t, t), {
+				vim.fn.jobstart("diff -qbB " .. output .. " " .. answer, {
 					on_exit = function(_, comp, _)
 						if comp == 0 then
 							problem.result[t] = "AC"
@@ -125,7 +129,7 @@ function M.run(t)
 				end
 				redraw()
 				if t == problem.curTest then
-					layout.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
+					layout.wincmd("err", "e! " .. stderr)
 				end
 				layout.wincmd("out", "e")
 			end
@@ -162,7 +166,6 @@ function M.compile(all)
 		problem.lang.sources[problem.lang.source].compile,
 		{ flag = problem.lang.flags[problem.lang.flag] }
 	)
-	print(compile_command)
 	vim.fn.jobstart(compile_command, {
 		on_stderr = function(_, data, _)
 			for _, d in ipairs(data) do

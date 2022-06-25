@@ -31,7 +31,7 @@ local commands = {
 		run = function(layout)
 			require("cpeditor.layout").change(layout[1])
 		end,
-		complete = empty
+		complete = empty,
 	},
 	test = {
 		run = function(t)
