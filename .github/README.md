@@ -4,7 +4,7 @@
     height="30"
     width="0px"
   />
-    Competitive programming plugin written in lua
+  Competitive programming plugin written in lua
   <img
     src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/misc/transparent.png"
     height="30"
@@ -20,10 +20,10 @@
 
 ![image](https://user-images.githubusercontent.com/56817415/175785755-bc1a951a-875a-4970-af1c-74cd81d62012.png)
 
-With nvimtree layout
+# With nvimtree layout
 ![image](https://user-images.githubusercontent.com/56817415/175785779-89595d00-1def-4937-b69d-0e19bdbe4b18.png)
 
-Note: You can custom your own layout!
+Note: You can write your own custom layout and change layouts on the fly!
 
 # Installation
 
@@ -173,6 +173,10 @@ https://github.com/mfussenegger/nvim-dap
 
 - Stresstest
 Will write document later
+
+- Interactive problem
+For now I use [interactive_runner.py](https://github.com/Aeren1564/Tools/blob/main/interactive_runner.py)
+Planned: [codeforces#99821](https://codeforces.com/blog/entry/99821)
 
 # Acknowledgement
 - https://github.com/p00f/cphelper.nvim My initial motivation to write this plugin
