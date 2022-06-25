@@ -1,12 +1,10 @@
-# cpeditor.nvim
-
 <h1 align="center">
   <img
     src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/misc/transparent.png"
     height="30"
     width="0px"
   />
-  Competitive programming plugin written in lua
+  	Competitive programming plugin written in lua
   <img
     src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/misc/transparent.png"
     height="30"
@@ -14,7 +12,11 @@
   />
 </h1>
 
-A plugin written in lua for Competitive Programming based on [cpeditor](https://github.com/cpeditor/cpeditor)
+<p align="center">
+    <a href="https://github.com/catppuccin/nvim/stargazers"><img src="https://img.shields.io/github/stars/nullchilly/cpeditor.nvim?colorA=1e1e28&colorB=c9cbff&style=for-the-badge&logo=starship style=for-the-badge"></a>
+    <a href="https://github.com/catppuccin/nvim/issues"><img src="https://img.shields.io/github/issues/nullchilly/cpeditor.nvim?colorA=1e1e28&colorB=f7be95&style=for-the-badge"></a>
+    <a href="https://github.com/catppuccin/nvim/contributors"><img src="https://img.shields.io/github/contributors/nullchilly/cpeditor.nvim?colorA=1e1e28&colorB=b1e1a6&style=for-the-badge"></a>
+</p>
 
 # Preview
 ![image](https://user-images.githubusercontent.com/56817415/174642705-da06d962-13f4-442b-be54-d48d9666e6b8.png)
@@ -164,3 +166,4 @@ Work in progress
 # Acknowledgement
 - https://github.com/p00f/cphelper.nvim My initial motivation to write this plugin
 - https://github.com/xeluxee/competitest.nvim For great ideas
+- https://github.com/cpeditor/cpeditor For not merging vim support since 2020
