@@ -2,7 +2,7 @@ local M = {}
 
 local path = require "plenary.path"
 local problems = require "cpeditor.problems"
-local config = require "cpeditor".config
+local config = require("cpeditor").config
 local layout = require "cpeditor.layout"
 local utils = require "cpeditor.utils"
 
@@ -15,10 +15,10 @@ function M.switch(t)
 	if not problem.result[t] then
 		return
 	end
-	layout.wincmd("err", "e! " .. utils.inter(config.tests_format.stderr, {tcnum = t}))
-	layout.wincmd("inp", "e! " .. utils.inter(config.tests_format.input, {tcnum = t}))
-	layout.wincmd("out", "e! " .. utils.inter(config.tests_format.output, {tcnum = t}))
-	layout.wincmd("ans", "e! " .. utils.inter(config.tests_format.answer, {tcnum = t}))
+	layout.wincmd("err", "e! " .. utils.inter(config.tests_format.stderr, { tcnum = t }))
+	layout.wincmd("inp", "e! " .. utils.inter(config.tests_format.input, { tcnum = t }))
+	layout.wincmd("out", "e! " .. utils.inter(config.tests_format.output, { tcnum = t }))
+	layout.wincmd("ans", "e! " .. utils.inter(config.tests_format.answer, { tcnum = t }))
 	problem.curTest = t
 end
 
@@ -98,41 +98,39 @@ function M.run(t)
 	redraw()
 	local timer = 0
 	local tle = nil
-	local run_command = utils.inter(problem.lang.sources[problem.lang.source].run, {tcnum = t})
-	local job = vim.fn.jobstart(run_command ,
-		{
-			on_exit = function(_, exitCode, _)
-				vim.fn.timer_stop(timer)
+	local run_command = utils.inter(problem.lang.sources[problem.lang.source].run, { tcnum = t })
+	local job = vim.fn.jobstart(run_command, {
+		on_exit = function(_, exitCode, _)
+			vim.fn.timer_stop(timer)
+			if t == problem.curTest then
+				layout.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
+				layout.wincmd("out", "e!")
+			end
+			if exitCode == 0 then
+				vim.fn.jobstart(string.format("diff -qbB tests/%d/%d.out tests/%d/%d.ans", t, t, t, t), {
+					on_exit = function(_, comp, _)
+						if comp == 0 then
+							problem.result[t] = "AC"
+						else
+							problem.result[t] = "WA"
+						end
+						redraw()
+					end,
+				})
+			else
+				if tle then
+					problem.result[t] = "TL"
+				else
+					problem.result[t] = "RE"
+				end
+				redraw()
 				if t == problem.curTest then
 					layout.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
-					layout.wincmd("out", "e!")
 				end
-				if exitCode == 0 then
-					vim.fn.jobstart(string.format("diff -qbB tests/%d/%d.out tests/%d/%d.ans", t, t, t, t), {
-						on_exit = function(_, comp, _)
-							if comp == 0 then
-								problem.result[t] = "AC"
-							else
-								problem.result[t] = "WA"
-							end
-							redraw()
-						end,
-					})
-				else
-					if tle then
-						problem.result[t] = "TL"
-					else
-						problem.result[t] = "RE"
-					end
-					redraw()
-					if t == problem.curTest then
-						layout.wincmd("err", string.format("e! tests/%d/%d.err", t, t))
-					end
-					layout.wincmd("out", "e")
-				end
-			end,
-		}
-	)
+				layout.wincmd("out", "e")
+			end
+		end,
+	})
 	timer = vim.fn.timer_start(problem.timeout, function()
 		vim.fn.jobstop(job)
 		tle = 1
@@ -160,7 +158,10 @@ function M.compile(all)
 	-- TODO: change to buffer attach
 	problem.status = "Compiling"
 	layout.wincmd("err", "e .err")
-	local compile_command = utils.inter(problem.lang.sources[problem.lang.source].compile, {flag = problem.lang.flags[problem.lang.flag]})
+	local compile_command = utils.inter(
+		problem.lang.sources[problem.lang.source].compile,
+		{ flag = problem.lang.flags[problem.lang.flag] }
+	)
 	print(compile_command)
 	vim.fn.jobstart(compile_command, {
 		on_stderr = function(_, data, _)

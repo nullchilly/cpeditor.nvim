@@ -1,7 +1,18 @@
-
-# WARNING: Work in progress, breaking changes everywhere
-
 # cpeditor.nvim
+
+<h1 align="center">
+  <img
+    src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/misc/transparent.png"
+    height="30"
+    width="0px"
+  />
+  Competitive programming plugin written in lua
+  <img
+    src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/misc/transparent.png"
+    height="30"
+    width="0px"
+  />
+</h1>
 
 A plugin written in lua for Competitive Programming based on [cpeditor](https://github.com/cpeditor/cpeditor)
 
@@ -17,54 +28,88 @@ use {
 }
 ```
 
-# Features (Will update later)
-
-- Problem parser
-
-https://github.com/jmerle/competitive-companion
-- Hotkey submit
-
-https://github.com/xalanq/cf-tool
-- Debugging
-
-Work in progress
-- Stresstest
-
-Work in progress
-
 # Setup
 
 ```lua
 require("cpeditor").setup {
 	integration = {
-		bufferline = false,
-		nvim_dap = false
+		bufferline = false, -- Set to true is recommended
+		nvim_dap = false, -- Get test input file path
 	},
+
 	links = {
-		["local"] = "~/code/local",
-		["https://codeforces.com/contest/(%d+)/problem/(%w+)"] = "~/code/contest/codeforces",
-		["https://codeforces.com/problemset/problem/(%d+)/(%w+)"] = "~/code/contest/codeforces",
+		["local"] = {
+			path = "~/code/local",
+			name = "${name}"
+		},
+		["https://codeforces.com/contest/(%d+)/problem/(%w+)"] = { -- https://codeforces.com/problemset/problem/464/E
+			path = "~/code/contest/codeforces/${m1}/${m2}", -- m1 = 464, m2 = E
+			name = "${m1}${m2}" -- name = 464E
+		},
+		["https://codeforces.com/problemset/problem/(%d+)/(%w+)"] = {
+			path = "~/code/contest/codeforces/${m1}/${m2}",
+			name = "${m1}${m2}"
+		},
 	},
+
 	layouts = {
-		floating = {},
-		default = {
+		only = {
+			func = function() end,
+			order = { 1, 0, 0, 0, 0 },
+		},
+		split = {
 			func = function()
 				vim.cmd "set nosplitright | vs | setl wfw | wincmd w | bel sp | vs | vs | 1wincmd w"
 			end,
-			order = {1, 2, 3, 4, 5}, -- main, errors, input, output, expected output
+			order = { 1, 2, 3, 4, 5 }, -- main, errors, input, output, expected output
 		},
 	},
-	default_layout = "default",
+	layout = "split",
+
+	tests_format = {
+		input = "tests/${tcnum}/${tcnum}.in",
+		output = "tests/${tcnum}/${tcnum}.out",
+		answer = "tests/${tcnum}/${tcnum}.ans",
+		stderr = "tests/${tcnum}/${tcnum}.err"
+	},
+
 	langs = {
 		cpp = {
-			main = {"sol.cpp", "g++ -Wall -O2 -o sol", "./sol"},
-			brute = {"brute.cpp", "g++ -Wall -O2 -o brute", "./brute"},
-			gen = {"gen.cpp", "g++ -Wall -O2 -o gen", "./gen"},
-		}
+			flags = {
+				normal = "-std=c++20 -O2 -DTIMING -DLOCAL -ftree-vectorize -fopt-info-vec",
+				debug = "-std=c++20 -g -Wall -Wextra -Wpedantic -Wshadow -Wformat=2 -Wfloat-equal -Wconversion -Wlogical-op -Wshift-overflow=2 -Wduplicated-cond -Wcast-qual -Wcast-align -Wno-variadic-macros -DDEBUG -DLOCAL -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -fsanitize=address -fsanitize=undefined -fno-sanitize-recover -fstack-protector -fsanitize-address-use-after-scope" -- :Cpeditor flag debug
+			},
+			flag = "normal",
+			sources = {
+				["main.cpp"] = {
+					compile = "g++ ${flag} main.cpp -o main",
+					run = "./main < tests/${tcnum}/${tcnum}.in > tests/${tcnum}/${tcnum}.out 2> tests/${tcnum}/${tcnum}.err"
+				},
+				-- Stress testing
+				["brute.cpp"] = {
+					compile = "g++ ${flag} brute.cpp -o brute",
+					run = "./brute < ${input} > ${output} 2> ${stderr}"
+				},
+				["gen.cpp"] = {
+					compile = "g++ ${flag} -o gen",
+					run = "./gen < ${input} > ${output} 2> ${stderr}"
+				},
+				["stress.cpp"] = {
+					compile = "g++ ${flag} -o stress",
+					run = "./stress"
+				}
+			},
+			source = "main.cpp"
+		},
+		python = {
+			["${pname}.py"] = { -- 464E.py
+				compile = [[python -c "import py_compile; py_compile.compile('${pname}.py')"]],
+				run = "pypy ${pname.py}"
+			}
+		},
 	},
-	default_lang = "cpp"
-}
-```
+	lang = "cpp",
+}```
 
 # Integrations
 
@@ -100,6 +145,21 @@ vim.keymap.set('n', 't', function()
 	vim.cmd("Cpeditor test " .. vim.v.count)
 end)
 ```
+
+# Features (Will update later)
+
+- Problem parser
+
+https://github.com/jmerle/competitive-companion
+- Hotkey submit
+
+https://github.com/xalanq/cf-tool
+- Debugging
+
+Work in progress
+- Stresstest
+
+Work in progress
 
 # Acknowledgement
 - https://github.com/p00f/cphelper.nvim My initial motivation to write this plugin

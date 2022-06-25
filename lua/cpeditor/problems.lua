@@ -17,24 +17,25 @@ function M.build_test(tests)
 		problem.result[i] = "NA"
 		i = tostring(i)
 		local test_path = config.tests_format
-		path:new(utils.inter(test_path.input, {tcnum = i})):parent():mkdir { exists_ok = true, parents = true }
-		path:new(utils.inter(test_path.input, {tcnum = i})):write(test.input, "w")
-		path:new(utils.inter(test_path.output, {tcnum = i})):write(test.output, "w")
+		path:new(utils.inter(test_path.input, { tcnum = i })):parent():mkdir { exists_ok = true, parents = true }
+		path:new(utils.inter(test_path.input, { tcnum = i })):write(test.input, "w")
+		path:new(utils.inter(test_path.output, { tcnum = i })):write(test.output, "w")
 	end
 end
 
 function M.new(data)
-
 	-- Build folder
 	local res = nil
 	for link, tab in pairs(config.links) do
 		local match = (data.url):gmatch(link)
 		for k, v in match do
-			tab.name = utils.inter(tab.name, {m1 = k, m2 = v, name = data.name})
-			tab.path = utils.inter(tab.path, {m1 = k, m2 = v, name = data.name})
+			tab.name = utils.inter(tab.name, { m1 = k, m2 = v, name = data.name })
+			tab.path = utils.inter(tab.path, { m1 = k, m2 = v, name = data.name })
 			res = tab
 		end
-		if res then break end
+		if res then
+			break
+		end
 	end
 	if res == nil then
 		vim.notify "Invalid problem"

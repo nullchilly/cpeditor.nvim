@@ -19,13 +19,13 @@ local commands = {
 		run = function(args)
 			require("cpeditor.receive").start(args)
 		end,
-		complete = empty
+		complete = empty,
 	},
 	stop = {
 		run = function()
 			require("cpeditor.receive").stop()
 		end,
-		complete = empty
+		complete = empty,
 	},
 	test = {
 		run = function(t)
