@@ -30,8 +30,14 @@ local default_config = {
 			func = function()
 				vim.cmd "set nosplitright | vs | setl wfw | wincmd w | bel sp | vs | vs | 1wincmd w"
 			end,
-			order = { 1, 2, 3, 4, 5 }, -- main, errors, input, output, expected output
+			order = { 1, 2, 3, 4, 5 } -- main, errors, input, output, expected output
 		},
+		tree = {
+			func = function()
+				vim.cmd "execute 'NvimTreeToggle' | set nosplitright | 2wincmd w | vs | setl wfw | wincmd w | bel sp | sp | sp | 2wincmd w"
+			end,
+			order = {2, 3, 4, 5, 6}
+		}
 	},
 	layout = "split",
 
@@ -71,10 +77,13 @@ local default_config = {
 			source = "main.cpp",
 		},
 		python = {
-			["${pname}.py"] = { -- 464E.py
-				compile = [[python -c "import py_compile; py_compile.compile('${pname}.py')"]],
-				run = "pypy ${pname.py}",
+			sources = {
+				["${pname}.py"] = { -- 464E.py
+					compile = [[python -c "import py_compile; py_compile.compile('${pname}.py')"]],
+					run = "pypy ${pname.py}",
+				},
 			},
+			source = "${pname}.py"
 		},
 	},
 	lang = "cpp",

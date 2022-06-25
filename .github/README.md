@@ -103,14 +103,18 @@ require("cpeditor").setup {
       source = "main.cpp"
     },
     python = {
-      ["${pname}.py"] = { -- 464E.py
-        compile = [[python -c "import py_compile; py_compile.compile('${pname}.py')"]],
-        run = "pypy ${pname.py}"
-      }
-    },
+			sources = {
+				["${pname}.py"] = { -- 464E.py
+					compile = [[python -c "import py_compile; py_compile.compile('${pname}.py')"]],
+					run = "pypy ${pname.py}",
+				},
+			},
+			source = "${pname}.py"
+		},
   },
   lang = "cpp",
-}```
+}
+```
 
 # Integrations
 
@@ -138,14 +142,11 @@ require("bufferline").setup {
 ```
 
 - nvim-dap
+I will provide test path along with execution path
 
-# Example keymaps
-```lua
-vim.keymap.set("n", "<leader>x", "<cmd> tabclose <CR>") --   close tab
-vim.keymap.set('n', 't', function()
-  vim.cmd("Cpeditor test " .. vim.v.count)
-end)
-```
+# Example setup
+
+You can see my personal setup [here](https://github.com/nullchilly/dots/blob/main/.config/nvim/lua/config/cpeditor.lua)
 
 # Features (Will update later)
 
@@ -156,11 +157,10 @@ https://github.com/jmerle/competitive-companion
 
 https://github.com/xalanq/cf-tool
 - Debugging
+https://github.com/mfussenegger/nvim-dap
 
-Work in progress
 - Stresstest
-
-Work in progress
+Will write document later
 
 # Acknowledgement
 - https://github.com/p00f/cphelper.nvim My initial motivation to write this plugin

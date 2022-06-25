@@ -27,6 +27,12 @@ local commands = {
 		end,
 		complete = empty,
 	},
+	layout = {
+		run = function(layout)
+			require("cpeditor.layout").change(layout[1])
+		end,
+		complete = empty
+	},
 	test = {
 		run = function(t)
 			t = t[1]

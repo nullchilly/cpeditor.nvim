@@ -93,14 +93,14 @@ end
 function M.wincmd(type, cmd)
 	local problem = problems.current
 	local convert = {
-		main = problem.win_id[1],
-		err = problem.win_id[2],
-		inp = problem.win_id[3],
-		out = problem.win_id[4],
-		ans = problem.win_id[5],
+		main = problem.win_id[problem.layout.order[1]],
+		err = problem.win_id[problem.layout.order[2]],
+		inp = problem.win_id[problem.layout.order[3]],
+		out = problem.win_id[problem.layout.order[4]],
+		ans = problem.win_id[problem.layout.order[5]],
 	}
 	local index = convert[type]
-	if index == 0 then
+	if index == nil then
 		return
 	end
 	vim.api.nvim_win_call(index, function()
@@ -109,9 +109,14 @@ function M.wincmd(type, cmd)
 end
 
 function M.change(layout)
-	layout = layout or config.layout
+	if layout then
+		vim.cmd "only"
+	else
+		layout = config.layout
+	end
 	local problem = problems.current
-	config.layouts[layout].func()
+	problem.layout = config.layouts[layout]
+	problem.layout.func()
 	problem.win_id = vim.api.nvim_tabpage_list_wins(0)
 	require("cpeditor.test").switch(problem.curTest)
 	require("cpeditor.lang").set(config.lang)

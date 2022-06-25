@@ -1,5 +1,3 @@
-*cpeditor* CP Editor is a plugin for competitive programming
-Until I figure how to autogen vim doc, read this:
-https://github.com/nullchilly/cpeditor.nvim#readme
+*cpeditor* Competitive programming plugin written in lua 
 
-vim:ft=help
+https://github.com/nullchilly/cpeditor.nvim#readme
