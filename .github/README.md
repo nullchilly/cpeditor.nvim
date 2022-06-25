@@ -18,7 +18,8 @@
     <a href="https://github.com/catppuccin/nvim/contributors"><img src="https://img.shields.io/github/contributors/nullchilly/cpeditor.nvim?colorA=1e1e28&colorB=b1e1a6&style=for-the-badge"></a>
 </p>
 
-![image](https://user-images.githubusercontent.com/56817415/175784821-77f43e90-be9b-45e4-92a9-78e8aa77d2a1.png)
+![image](https://user-images.githubusercontent.com/56817415/175785755-bc1a951a-875a-4970-af1c-74cd81d62012.png)
+![image](https://user-images.githubusercontent.com/56817415/175785779-89595d00-1def-4937-b69d-0e19bdbe4b18.png)
 
 # Installation
 
